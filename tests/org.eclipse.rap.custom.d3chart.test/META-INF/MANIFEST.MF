@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.eclipse.rap.custom.d3chart.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse - RAP Incubator
+Fragment-Host: org.eclipse.rap.custom.d3chart;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.eclipse.rap.rwt.testfixture;bundle-version="2.0.0"

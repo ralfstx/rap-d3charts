@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+excluded=//*.min.js
+globals=rap\: false\n
+included=js//*.js
+options=bitwise\: true,\ncurly\: true,\neqeqeq\: true,\nforin\: false,\nimmed\: true,\nlatedef\: true,\nnewcap\: true,\nnoarg\: true,\nnonew\: true,\nregexp\: false,\nundef\: true,\nunused\: true,\nstrict\: false,\ntrailing\: true,\nwhite\: false,\n\nbrowser\: true\n
+projectSpecificOptions=true
