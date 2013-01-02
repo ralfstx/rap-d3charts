@@ -4,4 +4,5 @@ Bundle-Name: D3 Chart
 Bundle-SymbolicName: org.eclipse.rap.custom.d3chart
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.rap.rwt
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="2.0.0"
+Export-Package: org.eclipse.rap.custom.d3chart;version="1.0.0"
