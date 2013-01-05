@@ -62,18 +62,24 @@ d3chart.Chart.prototype = {
   _redraw: function() {
     var that = this;
     var selection = this._chart.selectAll( "rect" )
-      .data( this._items );
+      .data( this._items, function( item ) { return item._rwtId; } );
     selection.enter().append( "rect" )
       .attr( "x", 10 )
-      .attr( "y", function( item, index ) { return 10 + index * 12; } )
+      .attr( "y", function( item, index ) { return 10 + index * 20; } )
       .attr( "opacity", 1.0 )
-      .attr( "width", function( item ) { return that._xScale( item.getValue() ); } )
-      .attr( "height", 11 )
+      .attr( "width", 0 )
+      .attr( "height", 18 )
       .attr( "fill", function( item ) { return item.getColor(); } );
     selection
+      .transition()
+      .duration( 1000 )
+      .attr( "y", function( item, index ) { return 10 + index * 20; } )
       .attr( "width", function( item ) { return that._xScale( item.getValue() ); } )
       .attr( "fill", function( item ) { return item.getColor(); } );
     selection.exit()
+      .transition()
+      .duration( 400 )
+      .attr( "opacity", 0.0 )
       .remove();
   }
 };

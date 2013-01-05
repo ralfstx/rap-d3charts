@@ -46,16 +46,35 @@ public class ChartExamplePage implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
-    Button button = new Button( composite, SWT.PUSH );
-    button.setLayoutData( new GridData( SWT.BEGINNING, SWT.CENTER, false, false ) );
-    button.setText( "Add item" );
-    button.addListener( SWT.Selection, new Listener() {
+    createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
-        ChartItem item = new ChartItem( chart );
-        item.setValue( Math.random() );
-        item.setColor( createRandomColor( item.getDisplay(), item ) );
+        addItem();
       }
     } );
+    createButton( composite, "Remove item", new Listener() {
+      public void handleEvent( Event event ) {
+        removeItem();
+      }
+    } );
+  }
+
+  private void createButton( Composite parent, String text, Listener listener ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( text );
+    button.addListener( SWT.Selection, listener );
+  }
+
+  private void addItem() {
+    ChartItem item = new ChartItem( chart );
+    item.setValue( Math.random() );
+    item.setColor( createRandomColor( item.getDisplay(), item ) );
+  }
+
+  private void removeItem() {
+    ChartItem[] items = chart.getItems();
+    if( items.length > 0 ) {
+      items[ 0 ].dispose();
+    }
   }
 
   private static Color createRandomColor( Display display, ChartItem item ) {
