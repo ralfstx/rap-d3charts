@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,14 @@ package org.eclipse.rap.custom.d3chart;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.widgets.Canvas;
@@ -28,12 +31,30 @@ public class Chart extends Canvas {
 
   private static final String REMOTE_TYPE = "d3chart.Chart";
   private final RemoteObject remoteObject;
+  private final List<ChartItem> items;
 
   public Chart( Composite parent, int style ) {
     super( parent, style );
+    items = new ArrayList<ChartItem>();
     remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", WidgetUtil.getId( this ) );
     ensureJavaScriptResources();
+  }
+
+  public ChartItem[] getItems() {
+    return items.toArray( new ChartItem[ 0 ] );
+  }
+
+  void addItem( ChartItem item ) {
+    items.add( item );
+  }
+
+  void removeItem( ChartItem item ) {
+    items.remove( item );
+  }
+
+  String getRemoteId() {
+    return ( ( RemoteObjectImpl )remoteObject ).getId();
   }
 
   private void ensureJavaScriptResources() {

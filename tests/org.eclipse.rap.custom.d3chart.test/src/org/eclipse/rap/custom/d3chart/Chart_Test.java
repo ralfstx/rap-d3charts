@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 EclipseSource and others.
+ * Copyright (c) 2013 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.remote.RemoteObject;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
@@ -26,6 +28,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +46,17 @@ public class Chart_Test {
     shell = new Shell( display );
   }
 
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
+
   @Test
   public void testCreate() {
-    Chart chart = new Chart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.BORDER );
 
     assertEquals( shell, chart.getParent() );
+    assertEquals( SWT.BORDER, chart.getStyle() & SWT.BORDER );
   }
 
   @Test
@@ -72,6 +81,35 @@ public class Chart_Test {
     Chart chart = new Chart( shell, SWT.NONE );
 
     verify( remoteObject ).set( eq( "parent" ), eq( WidgetUtil.getId( chart ) ) );
+  }
+
+  @Test
+  public void testGetItems_emptyByDefault() {
+    Chart chart = new Chart( shell, SWT.BORDER );
+
+    assertEquals( 0, chart.getItems().length );
+  }
+
+  @Test
+  public void testAddItem() {
+    Chart chart = new Chart( shell, SWT.BORDER );
+    ChartItem item = mock( ChartItem.class );
+
+    chart.addItem( item );
+
+    assertEquals( 1, chart.getItems().length );
+    assertTrue( Arrays.asList( chart.getItems() ).contains( item ) );
+  }
+
+  @Test
+  public void testRemoveItem() {
+    Chart chart = new Chart( shell, SWT.BORDER );
+    ChartItem item = mock( ChartItem.class );
+    chart.addItem( item );
+
+    chart.removeItem( item );
+
+    assertEquals( 0, chart.getItems().length );
   }
 
   @Test

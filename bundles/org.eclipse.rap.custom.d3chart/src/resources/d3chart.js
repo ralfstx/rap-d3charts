@@ -11,6 +11,8 @@
 
 d3chart = {};
 
+// CHART
+
 d3chart.Chart = function() {
   var element = document.createElement( "div" );
   element.style.position = "absolute";
@@ -25,14 +27,16 @@ var height = 200;
   this._xScale = d3.scale.linear()
     .domain( [ 0, 1 ] )
     .range( [ 0, width ] );
-  this._data = [ { value: 0.1, color: "#3182bd" },
-                 { value: 0.5, color: "#6baed6" },
-                 { value: 0.9, color: "#9ecae1" } ];
+  this._items = [];
   this._chart = d3.select( this._element ).append( "svg" )
     .attr( "class", "chart" )
     .attr( "width", width )
     .attr( "height", height );
   this._redraw();
+  var that = this;
+  this._redrawRunner = function() {
+    that._redraw();
+  };
 };
 
 d3chart.Chart.prototype = {
@@ -41,24 +45,34 @@ d3chart.Chart.prototype = {
     return this._element;
   },
 
-  setData: function( data ) {
-    this._data = data;
-    this._redraw();
+  _addItem: function( item ) {
+    this._items.push( item );
+    // TODO replace with render callback
+    window.setTimeout( this._redrawRunner, 30 );
+  },
+
+  _removeItem: function( item ) {
+    this._items = this._items.filter( function( element ) {
+      return element !== item;
+    } );
+    // TODO replace with render callback
+    window.setTimeout( this._redrawRunner, 30 );
   },
 
   _redraw: function() {
     var that = this;
     var selection = this._chart.selectAll( "rect" )
-      .data( this._data, function( datum ) { return datum.value; } );
+      .data( this._items );
     selection.enter().append( "rect" )
       .attr( "x", 10 )
-      .attr( "y", function( datum, index ) { return 10 + index * 12; } )
+      .attr( "y", function( item, index ) { return 10 + index * 12; } )
       .attr( "opacity", 1.0 )
-      .attr( "width", function( datum ) { return that._xScale( datum.value ); } )
+      .attr( "width", function( item ) { return that._xScale( item.getValue() ); } )
       .attr( "height", 11 )
-      .attr( "fill", function( datum ) { return ( datum.color ); } );
+      .attr( "fill", function( item ) { return item.getColor(); } );
     selection
-      .attr( "width", function( datum ) { return that._xScale( datum.value ); } );
+      .attr( "width", function( item ) { return that._xScale( item.getValue() ); } )
+      .attr( "fill", function( item ) { return item.getColor(); } );
     selection.exit()
       .remove();
   }
@@ -79,10 +93,63 @@ rap.registerTypeHandler( "d3chart.Chart", {
     if( el.parentNode ) {
       el.parentNode.removeChild( el );
     }
+  }
+
+} );
+
+// CHART ITEM
+
+d3chart.ChartItem = function( chart ) {
+  this._chart = chart;
+  this._value = 0;
+};
+
+d3chart.ChartItem.prototype = {
+
+  getChart: function() {
+    return this._chart;
+  },
+
+  getValue: function() {
+    return this._value;
+  },
+
+  setValue: function( value ) {
+    this._value = value;
+  },
+
+  getColor: function() {
+    return this._color;
+  },
+
+  setColor: function( color ) {
+    this._color = color;
+  }
+
+};
+
+// TYPE HANDLER
+
+rap.registerTypeHandler( "d3chart.ChartItem", {
+
+  factory : function( properties ) {
+    var chartItem = new d3chart.ChartItem();
+    rap.getObject( properties.parent )._addItem( chartItem );
+    return chartItem;
+  },
+
+  destructor : function( chartItem ) {
+    chartItem.getChart()._removeItem( chartItem );
   },
 
   properties : [
-    "data"
-  ]
+    "value", "color"
+  ],
+
+  propertyHandler: {
+    "color": function( chartItem, value ) {
+      chartItem.setColor( "#" + rwt.util.Colors.rgbToHexString( value ) );
+    }
+  }
 
 } );
