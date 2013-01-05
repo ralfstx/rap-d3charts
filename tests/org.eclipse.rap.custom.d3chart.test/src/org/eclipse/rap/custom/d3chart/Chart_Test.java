@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -57,6 +56,14 @@ public class Chart_Test {
 
     assertEquals( shell, chart.getParent() );
     assertEquals( SWT.BORDER, chart.getStyle() & SWT.BORDER );
+  }
+
+  @Test
+  public void testCreate_registeresJavaScriptResource() {
+    new Chart( shell, SWT.NONE );
+
+    assertTrue( RWT.getResourceManager().isRegistered( "d3.v3.min.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "d3chart.js" ) );
   }
 
   @Test
@@ -120,11 +127,33 @@ public class Chart_Test {
   }
 
   @Test
-  public void testCreate_registeresJavaScriptResource() {
-    new Chart( shell, SWT.NONE );
+  public void type_defaultsToBar() {
+    Chart chart = new Chart( shell, SWT.BORDER );
 
-    assertTrue( RWT.getResourceManager().isRegistered( "d3.v3.min.js" ) );
-    assertTrue( RWT.getResourceManager().isRegistered( "d3chart.js" ) );
+    String type = chart.getType();
+
+    assertEquals( "bar", type );
+  }
+
+  @Test
+  public void type_canBeChanged() {
+    Chart chart = new Chart( shell, SWT.BORDER );
+
+    chart.setType( "pie" );
+    String type = chart.getType();
+
+    assertEquals( "pie", type );
+  }
+
+  @Test
+  public void type_isRenderedToRemote() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeRemoteObjectFactory( remoteObject );
+    Chart chart = new Chart( shell, SWT.BORDER );
+
+    chart.setType( "pie" );
+
+    verify( remoteObject ).set( eq( "type" ), eq( "pie" ) );
   }
 
   private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {

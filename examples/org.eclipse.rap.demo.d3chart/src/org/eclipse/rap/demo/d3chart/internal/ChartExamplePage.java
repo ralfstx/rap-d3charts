@@ -19,14 +19,14 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 
 public class ChartExamplePage implements IExamplePage {
 
-  private Chart chart;
+  private Chart barChart;
+  private Chart pieChart;
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
@@ -38,8 +38,12 @@ public class ChartExamplePage implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    chart = new Chart( composite, SWT.BORDER );
-    chart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    pieChart = new Chart( composite, SWT.BORDER );
+    pieChart.setType( "pie" );
+    pieChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    barChart = new Chart( composite, SWT.BORDER );
+    barChart.setType( "bar" );
+    barChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
   }
 
   private void createControlPart( Composite parent ) {
@@ -48,12 +52,16 @@ public class ChartExamplePage implements IExamplePage {
     composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
-        addItem();
+        double value = Math.random();
+        Color color = createRandomColor();
+        addItem( pieChart, value, color );
+        addItem( barChart, value, color );
       }
     } );
     createButton( composite, "Remove item", new Listener() {
       public void handleEvent( Event event ) {
-        removeItem();
+        removeItem( pieChart );
+        removeItem( barChart );
       }
     } );
   }
@@ -64,21 +72,21 @@ public class ChartExamplePage implements IExamplePage {
     button.addListener( SWT.Selection, listener );
   }
 
-  private void addItem() {
+  private void addItem( Chart chart, double value, Color color ) {
     ChartItem item = new ChartItem( chart );
-    item.setValue( Math.random() );
-    item.setColor( createRandomColor( item.getDisplay(), item ) );
+    item.setValue( value );
+    item.setColor( color );
   }
 
-  private void removeItem() {
+  private void removeItem( Chart chart ) {
     ChartItem[] items = chart.getItems();
     if( items.length > 0 ) {
       items[ 0 ].dispose();
     }
   }
 
-  private static Color createRandomColor( Display display, ChartItem item ) {
-    return new Color( display, randomValue(), randomValue(), randomValue() );
+  private Color createRandomColor() {
+    return new Color( barChart.getDisplay(), randomValue(), randomValue(), randomValue() );
   }
 
   private static int randomValue() {
