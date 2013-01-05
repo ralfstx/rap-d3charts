@@ -58,6 +58,7 @@ public class ChartItem extends Item {
   public void dispose() {
     super.dispose();
     getChart().removeItem( this );
+    remoteObject.destroy();
   }
 
   private Chart getChart() {

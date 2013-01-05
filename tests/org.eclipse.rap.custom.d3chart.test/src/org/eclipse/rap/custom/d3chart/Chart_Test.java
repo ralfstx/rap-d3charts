@@ -61,10 +61,8 @@ public class Chart_Test {
 
   @Test
   public void testCreate_createsRemoteObject() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    RemoteObjectFactory factory = fakeRemoteObjectFactory( remoteObject );
 
     new Chart( shell, SWT.NONE );
 
@@ -73,14 +71,23 @@ public class Chart_Test {
 
   @Test
   public void testCreate_setsRemoteParent() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    fakeRemoteObjectFactory( remoteObject );
 
     Chart chart = new Chart( shell, SWT.NONE );
 
     verify( remoteObject ).set( eq( "parent" ), eq( WidgetUtil.getId( chart ) ) );
+  }
+
+  @Test
+  public void testDispose_destroysRemoteObject() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeRemoteObjectFactory( remoteObject );
+    Chart chart = new Chart( shell, SWT.NONE );
+
+    chart.dispose();
+
+    verify( remoteObject ).destroy();
   }
 
   @Test
@@ -118,6 +125,13 @@ public class Chart_Test {
 
     assertTrue( RWT.getResourceManager().isRegistered( "d3.v3.min.js" ) );
     assertTrue( RWT.getResourceManager().isRegistered( "d3chart.js" ) );
+  }
+
+  private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
+    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
+    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeRemoteObjectFactory( factory );
+    return factory;
   }
 
 }

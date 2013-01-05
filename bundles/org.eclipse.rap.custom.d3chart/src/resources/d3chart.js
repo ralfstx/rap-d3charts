@@ -133,13 +133,14 @@ d3chart.ChartItem.prototype = {
 rap.registerTypeHandler( "d3chart.ChartItem", {
 
   factory : function( properties ) {
-    var chartItem = new d3chart.ChartItem();
-    rap.getObject( properties.parent )._addItem( chartItem );
-    return chartItem;
+    var chart = rap.getObject( properties.parent );
+    var item = new d3chart.ChartItem( chart );
+    chart._addItem( item );
+    return item;
   },
 
-  destructor : function( chartItem ) {
-    chartItem.getChart()._removeItem( chartItem );
+  destructor : function( item ) {
+    item.getChart()._removeItem( item );
   },
 
   properties : [

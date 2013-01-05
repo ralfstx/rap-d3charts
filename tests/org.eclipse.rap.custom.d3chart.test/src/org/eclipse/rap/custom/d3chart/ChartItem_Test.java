@@ -63,10 +63,8 @@ public class ChartItem_Test {
 
   @Test
   public void create_createsRemoteObject() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    RemoteObjectFactory factory = fakeRemoteObjectFactory( remoteObject );
 
     new ChartItem( chart );
 
@@ -75,10 +73,8 @@ public class ChartItem_Test {
 
   @Test
   public void create_setsRemoteParent() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    fakeRemoteObjectFactory( remoteObject );
 
     new ChartItem( chart );
 
@@ -92,6 +88,17 @@ public class ChartItem_Test {
     chartItem.dispose();
 
     assertFalse( Arrays.asList( chart.getItems() ).contains( chartItem ) );
+  }
+
+  @Test
+  public void dispose_destroysRemoteObject() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeRemoteObjectFactory( remoteObject );
+    ChartItem chartItem = new ChartItem( chart );
+
+    chartItem.dispose();
+
+    verify( remoteObject ).destroy();
   }
 
   @Test
@@ -114,10 +121,8 @@ public class ChartItem_Test {
 
   @Test
   public void value_isTransferredToRemote() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    fakeRemoteObjectFactory( remoteObject );
 
     new ChartItem( chart ).setValue( 23.7 );
 
@@ -144,15 +149,20 @@ public class ChartItem_Test {
 
   @Test
   public void color_isTransferredToRemote() {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
     RemoteObject remoteObject = mock( RemoteObject.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
+    fakeRemoteObjectFactory( remoteObject );
 
     new ChartItem( chart ).setColor( new Color( display, 255, 128, 0 ) );
 
     int[] expected = ProtocolUtil.getColorAsArray( new Color( display, 255, 128, 0 ), false );
     verify( remoteObject ).set( eq( "color" ), eq( expected ) );
+  }
+
+  private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
+    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
+    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeRemoteObjectFactory( factory );
+    return factory;
   }
 
 }

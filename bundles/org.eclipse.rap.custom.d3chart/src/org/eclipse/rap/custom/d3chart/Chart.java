@@ -45,6 +45,12 @@ public class Chart extends Canvas {
     return items.toArray( new ChartItem[ 0 ] );
   }
 
+  @Override
+  public void dispose() {
+    super.dispose();
+    remoteObject.destroy();
+  }
+
   void addItem( ChartItem item ) {
     items.add( item );
   }
