@@ -13,7 +13,7 @@ d3chart = {};
 
 // CHART
 
-d3chart.Chart = function() {
+d3chart.Chart = function( parent ) {
   this._type = "bar";
   var element = document.createElement( "div" );
   element.style.position = "absolute";
@@ -21,23 +21,19 @@ d3chart.Chart = function() {
   element.style.top = "0px";
   element.style.width = "100%";
   element.style.height = "100%";
-// TODO flexible width and height
-var width = 400;
-var height = 300;
   this._element = element;
-  this._xScale = d3.scale.linear()
-    .domain( [ 0, 1 ] )
-    .range( [ 0, width ] );
+  parent.append( element );
+  this._padding = 20;
   this._items = [];
-  this._chart = d3.select( this._element ).append( "svg" )
-    .attr( "class", "chart" )
-    .attr( "width", width )
-    .attr( "height", height );
-  this._redraw();
+  this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   var that = this;
   this._redrawRunner = function() {
     that._redraw();
   };
+  parent.addListener( "Resize", function() {
+    that._resize( parent.getClientArea() );
+  } );
+  this._resize( parent.getClientArea() );
 };
 
 d3chart.Chart.prototype = {
@@ -70,6 +66,14 @@ d3chart.Chart.prototype = {
     window.setTimeout( this._redrawRunner, 30 );
   },
 
+  _resize: function( clientArea ) {
+    this._width = clientArea[ 2 ];
+    this._height = clientArea[ 3 ];
+    this._svg.attr( "width", this._width ).attr( "height", this._height );
+    // TODO replace with render callback
+    window.setTimeout( this._redrawRunner, 30 );
+  },
+
   _redraw: function() {
     this._renderers[ this._type ]( this );
   },
@@ -77,20 +81,22 @@ d3chart.Chart.prototype = {
   _renderers: {
 
     "bar": function( chart ) {
-      var selection = chart._chart.selectAll( "rect" )
+      var barWidth = 30;
+      var xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
+      var selection = chart._svg.selectAll( "rect" )
         .data( chart._items, function( item ) { return item._rwtId; } );
       selection.enter().append( "rect" )
-        .attr( "x", 10 )
-        .attr( "y", function( item, index ) { return 10 + index * 30; } )
+        .attr( "x", chart._padding )
+        .attr( "y", function( item, index ) { return chart._padding + index * barWidth; } )
         .attr( "opacity", 1.0 )
         .attr( "width", 0 )
-        .attr( "height", 30 )
+        .attr( "height", barWidth )
         .attr( "fill", function( item ) { return item.getColor(); } );
       selection
         .transition()
         .duration( 1000 )
-        .attr( "y", function( item, index ) { return 10 + index * 30; } )
-        .attr( "width", function( item ) { return chart._xScale( item.getValue() ); } )
+        .attr( "y", function( item, index ) { return chart._padding + index * barWidth; } )
+        .attr( "width", function( item ) { return xScale( item.getValue() ); } )
         .attr( "fill", function( item ) { return item.getColor(); } );
       selection.exit()
         .transition()
@@ -100,16 +106,27 @@ d3chart.Chart.prototype = {
     },
 
     "pie": function( chart ) {
+      var barWidth = 40;
       var startAngle = -90;
       var endAngle = 90;
+      var centerX = chart._width / 2;
+      var centerY = chart._height - chart._padding;
+      var outerRadius = Math.min( chart._width / 2, chart._height - chart._padding ) - chart._padding;
+      var innerRadius = Math.max( outerRadius - barWidth, 0 );
       var layout = d3.layout.pie().sort( null )
         .value( function( item ) { return item.getValue(); } )
         .startAngle( startAngle * Math.PI / 180  )
         .endAngle( endAngle * Math.PI / 180  );
+      var layer = chart._svg.select( "g.layer" );
+      if( layer.empty() ) {
+        chart._svg.append( "svg:g" ).attr( "class", "layer" );
+        layer = chart._svg.select( "g.layer" );
+      }
+      layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
       var arc = d3.svg.arc()
-        .outerRadius( 140 )
-        .innerRadius( 100 );
-      var selection = chart._chart.selectAll( "path.piechart_slice" )
+        .outerRadius( outerRadius )
+        .innerRadius( innerRadius );
+      var selection = layer.selectAll( "path.piechart_slice" )
         .data( layout( chart._items ), function( item ) { return item.data._rwtId; } );
       selection
         .attr( "fill", function( item ) { return item.data.getColor(); } )
@@ -127,7 +144,6 @@ d3chart.Chart.prototype = {
       ;
       selection.enter().append( "svg:path" )
         .attr( "class", "piechart_slice" )
-        .attr( "transform", "translate(" + 200 + "," + 200 + ")" )
         .attr( "opacity", 0.0 )
         .attr( "fill", function( item ) { return item.data.getColor(); } )
         .attr( "d", arc )
@@ -154,8 +170,8 @@ d3chart.Chart.prototype = {
 rap.registerTypeHandler( "d3chart.Chart", {
 
   factory : function( properties ) {
-    var chart = new d3chart.Chart();
-    rap.getObject( properties.parent ).append( chart.getElement() );
+    var parent = rap.getObject( properties.parent );
+    var chart = new d3chart.Chart( parent );
     return chart;
   },
 

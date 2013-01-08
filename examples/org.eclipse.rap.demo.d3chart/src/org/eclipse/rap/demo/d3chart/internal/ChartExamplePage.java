@@ -40,10 +40,10 @@ public class ChartExamplePage implements IExamplePage {
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
     pieChart = new Chart( composite, SWT.BORDER );
     pieChart.setType( "pie" );
-    pieChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    pieChart.setLayoutData( new GridData( 300, 200 ) );
     barChart = new Chart( composite, SWT.BORDER );
     barChart.setType( "bar" );
-    barChart.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    barChart.setLayoutData( new GridData( 300, 300 ) );
   }
 
   private void createControlPart( Composite parent ) {
@@ -62,6 +62,18 @@ public class ChartExamplePage implements IExamplePage {
       public void handleEvent( Event event ) {
         removeItem( pieChart );
         removeItem( barChart );
+      }
+    } );
+    createButton( composite, "Resize charts", new Listener() {
+      public void handleEvent( Event event ) {
+        if( pieChart.getSize().x > 350 ) {
+          pieChart.setLayoutData( new GridData( 300, 200 ) );
+          barChart.setLayoutData( new GridData( 300, 300 ) );
+        } else {
+          pieChart.setLayoutData( new GridData( 400, 300 ) );
+          barChart.setLayoutData( new GridData( 400, 400 ) );
+        }
+        barChart.getParent().layout();
       }
     } );
   }
