@@ -55,6 +55,12 @@ public class ChartItem extends Item {
   }
 
   @Override
+  public void setText( String text ) {
+    super.setText( text );
+    remoteObject.set( "text", text );
+  }
+
+  @Override
   public void dispose() {
     super.dispose();
     getChart().removeItem( this );

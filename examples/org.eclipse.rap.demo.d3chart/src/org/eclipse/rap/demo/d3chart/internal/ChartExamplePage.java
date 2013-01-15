@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.d3chart.internal;
 
+import java.text.DecimalFormat;
+
 import org.eclipse.rap.custom.d3chart.Chart;
 import org.eclipse.rap.custom.d3chart.ChartItem;
 import org.eclipse.rap.examples.ExampleUtil;
@@ -52,7 +54,7 @@ public class ChartExamplePage implements IExamplePage {
     composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
-        double value = Math.random();
+        double value = Math.random() * 0.8;
         Color color = createRandomColor();
         addItem( pieChart, value, color );
         addItem( barChart, value, color );
@@ -87,6 +89,8 @@ public class ChartExamplePage implements IExamplePage {
   private void addItem( Chart chart, double value, Color color ) {
     ChartItem item = new ChartItem( chart );
     item.setValue( value );
+    DecimalFormat format = new DecimalFormat( "#.#" );
+    item.setText( format.format( value * 100 ) + "%" );
     item.setColor( color );
   }
 
