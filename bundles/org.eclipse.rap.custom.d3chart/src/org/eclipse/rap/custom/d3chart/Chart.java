@@ -17,10 +17,9 @@ import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +36,7 @@ public class Chart extends Canvas {
   public Chart( Composite parent, int style ) {
     super( parent, style );
     items = new ArrayList<ChartItem>();
-    remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( REMOTE_TYPE );
+    remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", WidgetUtil.getId( this ) );
     ensureJavaScriptResources();
   }

@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Item;
@@ -32,7 +32,7 @@ public class ChartItem extends Item {
     chart.addItem( this );
     value = 0;
     color = chart.getDisplay().getSystemColor( SWT.COLOR_BLACK );
-    remoteObject = RemoteObjectFactory.getInstance().createRemoteObject( REMOTE_TYPE );
+    remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", chart.getRemoteId() );
   }
 

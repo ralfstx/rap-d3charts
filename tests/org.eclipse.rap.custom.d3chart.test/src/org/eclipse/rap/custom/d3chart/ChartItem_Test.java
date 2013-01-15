@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
+import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -64,17 +64,17 @@ public class ChartItem_Test {
   @Test
   public void create_createsRemoteObject() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    RemoteObjectFactory factory = fakeRemoteObjectFactory( remoteObject );
+    Connection connection = fakeConnection( remoteObject );
 
     new ChartItem( chart );
 
-    verify( factory ).createRemoteObject( eq( "d3chart.ChartItem" ) );
+    verify( connection ).createRemoteObject( eq( "d3chart.ChartItem" ) );
   }
 
   @Test
   public void create_setsRemoteParent() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
 
     new ChartItem( chart );
 
@@ -93,7 +93,7 @@ public class ChartItem_Test {
   @Test
   public void dispose_destroysRemoteObject() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     ChartItem chartItem = new ChartItem( chart );
 
     chartItem.dispose();
@@ -122,7 +122,7 @@ public class ChartItem_Test {
   @Test
   public void value_isTransferredToRemote() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
 
     new ChartItem( chart ).setValue( 23.7 );
 
@@ -150,7 +150,7 @@ public class ChartItem_Test {
   @Test
   public void color_isTransferredToRemote() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
 
     new ChartItem( chart ).setColor( new Color( display, 255, 128, 0 ) );
 
@@ -158,11 +158,11 @@ public class ChartItem_Test {
     verify( remoteObject ).set( eq( "color" ), eq( expected ) );
   }
 
-  private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
-    return factory;
+  private static Connection fakeConnection( RemoteObject remoteObject ) {
+    Connection connection = mock( Connection.class );
+    when( connection.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeConnection( connection );
+    return connection;
   }
 
 }

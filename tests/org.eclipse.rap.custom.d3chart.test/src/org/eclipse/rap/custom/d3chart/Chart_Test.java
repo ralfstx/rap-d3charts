@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObject;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectFactory;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings( "restriction" )
 public class Chart_Test {
 
   private Display display;
@@ -69,17 +68,17 @@ public class Chart_Test {
   @Test
   public void testCreate_createsRemoteObject() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    RemoteObjectFactory factory = fakeRemoteObjectFactory( remoteObject );
+    Connection connection = fakeConnection( remoteObject );
 
     new Chart( shell, SWT.NONE );
 
-    verify( factory ).createRemoteObject( eq( "d3chart.Chart" ) );
+    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
   }
 
   @Test
   public void testCreate_setsRemoteParent() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
 
     Chart chart = new Chart( shell, SWT.NONE );
 
@@ -89,7 +88,7 @@ public class Chart_Test {
   @Test
   public void testDispose_destroysRemoteObject() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     Chart chart = new Chart( shell, SWT.NONE );
 
     chart.dispose();
@@ -148,7 +147,7 @@ public class Chart_Test {
   @Test
   public void type_isRenderedToRemote() {
     RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeRemoteObjectFactory( remoteObject );
+    fakeConnection( remoteObject );
     Chart chart = new Chart( shell, SWT.BORDER );
 
     chart.setType( "pie" );
@@ -156,11 +155,11 @@ public class Chart_Test {
     verify( remoteObject ).set( eq( "type" ), eq( "pie" ) );
   }
 
-  private static RemoteObjectFactory fakeRemoteObjectFactory( RemoteObject remoteObject ) {
-    RemoteObjectFactory factory = mock( RemoteObjectFactory.class );
-    when( factory.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeRemoteObjectFactory( factory );
-    return factory;
+  private static Connection fakeConnection( RemoteObject remoteObject ) {
+    Connection connection = mock( Connection.class );
+    when( connection.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
+    Fixture.fakeConnection( connection );
+    return connection;
   }
 
 }
