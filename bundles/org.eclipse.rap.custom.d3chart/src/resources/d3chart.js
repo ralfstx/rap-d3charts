@@ -44,8 +44,7 @@ d3chart.Chart.prototype = {
 
   setType: function( type ) {
     this._type = type;
-    // TODO replace with render callback
-    window.setTimeout( this._redrawRunner, 30 );
+    this._scheduleUpdate();
   },
 
   getType: function() {
@@ -54,22 +53,24 @@ d3chart.Chart.prototype = {
 
   _addItem: function( item ) {
     this._items.push( item );
-    // TODO replace with render callback
-    window.setTimeout( this._redrawRunner, 30 );
+    this._scheduleUpdate();
   },
 
   _removeItem: function( item ) {
     this._items = this._items.filter( function( element ) {
       return element !== item;
     } );
-    // TODO replace with render callback
-    window.setTimeout( this._redrawRunner, 30 );
+    this._scheduleUpdate();
   },
 
   _resize: function( clientArea ) {
     this._width = clientArea[ 2 ];
     this._height = clientArea[ 3 ];
     this._svg.attr( "width", this._width ).attr( "height", this._height );
+    this._scheduleUpdate();
+  },
+
+  _scheduleUpdate: function() {
     // TODO replace with render callback
     window.setTimeout( this._redrawRunner, 30 );
   },
@@ -222,6 +223,7 @@ d3chart.ChartItem.prototype = {
 
   setValue: function( value ) {
     this._value = value;
+    this._chart._scheduleUpdate();
   },
 
   getColor: function() {
@@ -230,6 +232,7 @@ d3chart.ChartItem.prototype = {
 
   setColor: function( color ) {
     this._color = color;
+    this._chart._scheduleUpdate();
   },
 
   getText: function() {
@@ -238,6 +241,7 @@ d3chart.ChartItem.prototype = {
 
   setText: function( text ) {
     this._text = text;
+    this._chart._scheduleUpdate();
   }
 
 };

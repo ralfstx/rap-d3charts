@@ -25,7 +25,7 @@ public class ChartExampleContribution implements IExampleContribution {
   }
 
   public IExamplePage createPage() {
-    return new ChartExamplePage();
+    return new ChartExamplePage2();
   }
 
 }
