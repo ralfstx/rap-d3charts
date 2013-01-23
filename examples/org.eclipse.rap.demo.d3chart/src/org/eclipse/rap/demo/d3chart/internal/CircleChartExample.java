@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 
-public class ChartExamplePage2 implements IExamplePage {
+public class CircleChartExample implements IExamplePage {
 
   private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
   private final DataSet dataSet = ExampleData.VERSION_YEARLY;
@@ -52,8 +52,8 @@ public class ChartExamplePage2 implements IExamplePage {
 
   private void createControlPart( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
     createButton( composite, "Prev", new Listener() {
       public void handleEvent( Event event ) {
         showPrevious();

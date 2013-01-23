@@ -10,97 +10,97 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.d3chart.internal;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.rap.custom.d3chart.Chart;
-import org.eclipse.rap.custom.d3chart.ChartItem;
-import org.eclipse.rap.custom.d3chart.ColorSequence;
-import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 
 public class ChartExamplePage implements IExamplePage {
 
-  private Chart barChart;
-  private Chart pieChart;
-  private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
+  private Composite tabBar;
+  private Composite mainArea;
+  private final List<IExamplePage> subPages = new ArrayList<IExamplePage>();
 
   public void createControl( Composite parent ) {
-    parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
-    createChartPart( parent );
-    createControlPart( parent );
+    parent.setLayout( new FillLayout() );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new FormLayout() );
+    mainArea = createMainArea( composite );
+    tabBar = createTabBar( composite );
+    createItem( "Bar", new BarChartExample() );
+    createItem( "Circle", new CircleChartExample() );
+    showPage( subPages.get( 0 ) );
   }
 
-  private void createChartPart( Composite parent ) {
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    pieChart = new Chart( composite, SWT.BORDER );
-    pieChart.setType( "pie" );
-    pieChart.setLayoutData( new GridData( 300, 200 ) );
-    barChart = new Chart( composite, SWT.BORDER );
-    barChart.setType( "bar" );
-    barChart.setLayoutData( new GridData( 300, 300 ) );
+  private Composite createMainArea( Composite parent ) {
+    Composite area = new Composite( parent, SWT.NONE );
+    area.setLayout( new FillLayout() );
+    FormData layoutData = new FormData();
+    layoutData.top = new FormAttachment( 0 );
+    layoutData.left = new FormAttachment( 0 );
+    layoutData.right = new FormAttachment( 100 );
+    layoutData.bottom = new FormAttachment( 100, -30 );
+    area.setLayoutData( layoutData );
+    return area;
   }
 
-  private void createControlPart( Composite parent ) {
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayoutData( ExampleUtil.createFillData() );
-    composite.setLayout( ExampleUtil.createGridLayoutWithoutMargin( 1, false ) );
-    createButton( composite, "Add item", new Listener() {
+  private Composite createTabBar( Composite parent ) {
+    Composite bar = new Composite( parent, SWT.NONE );
+    RowLayout layout = new RowLayout( SWT.HORIZONTAL );
+    layout.marginLeft = 25;
+    layout.marginRight = 25;
+    layout.marginTop = 5;
+    layout.marginBottom = 5;
+    layout.spacing = 10;
+    bar.setLayout( layout );
+    FormData layoutData = new FormData();
+    layoutData.top = new FormAttachment( 100, -30 );
+    layoutData.left = new FormAttachment( 0 );
+    layoutData.right = new FormAttachment( 100 );
+    layoutData.bottom = new FormAttachment( 100 );
+    bar.setLayoutData( layoutData );
+    return bar;
+  }
+
+  private void createItem( String text, final IExamplePage page ) {
+    subPages.add( page );
+    final Label label = new Label( tabBar, SWT.NONE );
+    label.setText( text );
+    label.setCursor( label.getDisplay().getSystemCursor( SWT.CURSOR_HAND ) );
+    label.addListener( SWT.MouseDown, new Listener() {
       public void handleEvent( Event event ) {
-        double value = Math.random() * 0.8;
-        Color color = colors.next( barChart.getDisplay() );
-        addItem( pieChart, value, color );
-        addItem( barChart, value, color );
-      }
-    } );
-    createButton( composite, "Remove item", new Listener() {
-      public void handleEvent( Event event ) {
-        removeItem( pieChart );
-        removeItem( barChart );
-      }
-    } );
-    createButton( composite, "Resize charts", new Listener() {
-      public void handleEvent( Event event ) {
-        if( pieChart.getSize().x > 350 ) {
-          pieChart.setLayoutData( new GridData( 300, 200 ) );
-          barChart.setLayoutData( new GridData( 300, 300 ) );
-        } else {
-          pieChart.setLayoutData( new GridData( 400, 300 ) );
-          barChart.setLayoutData( new GridData( 400, 400 ) );
+        label.setForeground( new Color( label.getDisplay(), 0x31, 0x61, 0x9C ) );
+        for( Control control : label.getParent().getChildren() ) {
+          if( control != label ) {
+            control.setForeground( null );
+          }
         }
-        barChart.getParent().layout();
+        showPage( page );
       }
     } );
   }
 
-  private void createButton( Composite parent, String text, Listener listener ) {
-    Button button = new Button( parent, SWT.PUSH );
-    button.setText( text );
-    button.addListener( SWT.Selection, listener );
-  }
-
-  private void addItem( Chart chart, double value, Color color ) {
-    ChartItem item = new ChartItem( chart );
-    item.setValue( value );
-    DecimalFormat format = new DecimalFormat( "#.#" );
-    item.setText( format.format( value * 100 ) + "%" );
-    item.setColor( color );
-  }
-
-  private void removeItem( Chart chart ) {
-    ChartItem[] items = chart.getItems();
-    if( items.length > 0 ) {
-      items[ 0 ].dispose();
+  private void showPage( IExamplePage page ) {
+    Control[] children = mainArea.getChildren();
+    for( Control control : children ) {
+      control.dispose();
     }
+    Composite composite = new Composite( mainArea, SWT.NONE );
+    page.createControl( composite );
+    mainArea.layout();
   }
 
 }
