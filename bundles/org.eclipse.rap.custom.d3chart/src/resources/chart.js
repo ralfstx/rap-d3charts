@@ -11,8 +11,6 @@
 
 d3chart = {};
 
-// CHART
-
 d3chart.Chart = function( parent ) {
   this._type = "bar";
   var element = document.createElement( "div" );
@@ -201,74 +199,5 @@ rap.registerTypeHandler( "d3chart.Chart", {
   },
 
   properties: [ "type" ]
-
-} );
-
-// CHART ITEM
-
-d3chart.ChartItem = function( chart ) {
-  this._chart = chart;
-  this._value = 0;
-};
-
-d3chart.ChartItem.prototype = {
-
-  getChart: function() {
-    return this._chart;
-  },
-
-  getValue: function() {
-    return this._value;
-  },
-
-  setValue: function( value ) {
-    this._value = value;
-    this._chart._scheduleUpdate();
-  },
-
-  getColor: function() {
-    return this._color;
-  },
-
-  setColor: function( color ) {
-    this._color = color;
-    this._chart._scheduleUpdate();
-  },
-
-  getText: function() {
-    return this._text;
-  },
-
-  setText: function( text ) {
-    this._text = text;
-    this._chart._scheduleUpdate();
-  }
-
-};
-
-// TYPE HANDLER
-
-rap.registerTypeHandler( "d3chart.ChartItem", {
-
-  factory : function( properties ) {
-    var chart = rap.getObject( properties.parent );
-    var item = new d3chart.ChartItem( chart );
-    chart._addItem( item );
-    return item;
-  },
-
-  destructor : function( item ) {
-    item.getChart()._removeItem( item );
-  },
-
-  properties : [
-    "value", "color", "text"
-  ],
-
-  propertyHandler: {
-    "color": function( chartItem, value ) {
-      chartItem.setColor( "#" + rwt.util.Colors.rgbToHexString( value ) );
-    }
-  }
 
 } );

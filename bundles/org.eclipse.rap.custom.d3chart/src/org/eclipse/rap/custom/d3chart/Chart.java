@@ -10,17 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -38,7 +34,7 @@ public class Chart extends Canvas {
     items = new ArrayList<ChartItem>();
     remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", WidgetUtil.getId( this ) );
-    ensureJavaScriptResources();
+    ChartResources.ensureJavaScriptResources();
   }
 
   public ChartItem[] getItems() {
@@ -70,37 +66,6 @@ public class Chart extends Canvas {
 
   String getRemoteId() {
     return ( ( RemoteObjectImpl )remoteObject ).getId();
-  }
-
-  private void ensureJavaScriptResources() {
-    String d3Location = null;
-    String chartLocation = null;
-    ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
-    try {
-      // TODO register resources only once
-      d3Location = registerResource( "d3.v3.min.js", resourceManager );
-      chartLocation = registerResource( "d3chart.js", resourceManager );
-    } catch( IOException exception ) {
-      throw new RuntimeException( "Failed to register resource", exception );
-    }
-    JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
-    loader.require( d3Location );
-    loader.require( chartLocation + "?nocache=" + System.currentTimeMillis() );
-  }
-
-  private String registerResource( String resourceName, ResourceManager resourceManager )
-    throws IOException
-  {
-    String location;
-    ClassLoader classLoader = getClass().getClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream( "resources/" + resourceName );
-    try {
-      resourceManager.register( resourceName, inputStream );
-      location = resourceManager.getLocation( resourceName );
-    } finally {
-      inputStream.close();
-    }
-    return location;
   }
 
 }
