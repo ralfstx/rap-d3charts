@@ -25,9 +25,12 @@ d3chart.Chart = function( parent ) {
   this._items = [];
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   var that = this;
-  this._redrawRunner = function() {
-    that._redraw();
-  };
+  rap.on( "render", function() {
+    if( that._dirty ) {
+      that._redraw();
+      that._dirty = false;
+    }
+  } );
   parent.addListener( "Resize", function() {
     that._resize( parent.getClientArea() );
   } );
@@ -69,8 +72,7 @@ d3chart.Chart.prototype = {
   },
 
   _scheduleUpdate: function() {
-    // TODO replace with render callback
-    window.setTimeout( this._redrawRunner, 30 );
+    this._dirty = true;
   },
 
   _redraw: function() {
