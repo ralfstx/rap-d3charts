@@ -37,6 +37,8 @@ d3chart.Chart = function( parent ) {
   this._resize( parent.getClientArea() );
 };
 
+d3chart.Chart.renderers = {};
+
 d3chart.Chart.prototype = {
 
   getElement: function() {
@@ -76,109 +78,7 @@ d3chart.Chart.prototype = {
   },
 
   _redraw: function() {
-    this._renderers[ this._type ]( this );
-  },
-
-  _renderers: {
-
-    "bar": function( chart ) {
-      var barWidth = 25;
-      var spacing = 2;
-      var xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
-      var selection = chart._svg.selectAll( "g.barchart_bar" )
-        .data( chart._items, function( item ) { return item._rwtId; } );
-      var newBars = selection.enter().append( "svg:g" )
-        .attr( "class", "barchart_bar" )
-        .attr( "opacity", 1.0 );
-      newBars.append( "svg:rect" )
-        .attr( "x", chart._padding )
-        .attr( "y", function( item, index ) { return chart._padding + index * ( barWidth + spacing ); } )
-        .attr( "width", 0 )
-        .attr( "height", barWidth )
-        .attr( "fill", function( item ) { return item.getColor(); } );
-      newBars.append( "svg:text" )
-        .attr( "text-anchor", "left" )
-        .attr( "x", chart._padding + 6 )
-        .attr( "y", function( item, index ) { return chart._padding + index * ( barWidth + spacing ) + 18; } )
-        .style( "font-family", "sans-serif" )
-        .style( "font-size", "12px" );
-      selection
-        .select( "rect" )
-        .transition()
-        .duration( 1000 )
-        .attr( "y", function( item, index ) { return chart._padding + index * ( barWidth + spacing ); } )
-        .attr( "width", function( item ) { return xScale( item.getValue() ); } )
-        .attr( "fill", function( item ) { return item.getColor(); } );
-      selection
-        .select( "text" )
-        .transition()
-        .duration( 1000 )
-        .attr( "x", function( item ) { return chart._padding + 6 + xScale( item.getValue() ); } )
-        .attr( "y", function( item, index ) { return chart._padding + index * ( barWidth + spacing ) + 18; } )
-        .text( function( item ) { return item.getText(); } );
-      selection.exit()
-        .transition()
-        .duration( 400 )
-        .attr( "opacity", 0.0 )
-        .remove();
-    },
-
-    "pie": function( chart ) {
-      var barWidth = 40;
-      var startAngle = -90;
-      var endAngle = 90;
-      var centerX = chart._width / 2;
-      var centerY = chart._height - chart._padding;
-      var outerRadius = Math.min( chart._width / 2, chart._height - chart._padding ) - chart._padding;
-      var innerRadius = Math.max( outerRadius - barWidth, 0 );
-      var layout = d3.layout.pie().sort( null )
-        .value( function( item ) { return item.getValue(); } )
-        .startAngle( startAngle * Math.PI / 180  )
-        .endAngle( endAngle * Math.PI / 180  );
-      var layer = chart._svg.select( "g.layer" );
-      if( layer.empty() ) {
-        chart._svg.append( "svg:g" ).attr( "class", "layer" );
-        layer = chart._svg.select( "g.layer" );
-      }
-      layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
-      var arc = d3.svg.arc()
-        .outerRadius( outerRadius )
-        .innerRadius( innerRadius );
-      var selection = layer.selectAll( "path.piechart_slice" )
-        .data( layout( chart._items ), function( item ) { return item.data._rwtId; } );
-      selection
-        .attr( "fill", function( item ) { return item.data.getColor(); } )
-        .transition()
-        .duration( 1000 )
-        .attr( "opacity", 1.0 )
-        .attrTween( "d", function( datum ) {
-          var previous = this._buffer;
-          var interpolate = d3.interpolate( previous, datum );
-          this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
-          return function( t ) {
-            return arc( interpolate( t ) );
-          };
-        })
-      ;
-      selection.enter().append( "svg:path" )
-        .attr( "class", "piechart_slice" )
-        .attr( "opacity", 0.0 )
-        .attr( "fill", function( item ) { return item.data.getColor(); } )
-        .attr( "d", arc )
-        .each( function( datum ) {
-          this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
-        } )
-        .transition()
-        .duration( 1500 )
-        .attr( "opacity", 1.0 )
-      ;
-      selection.exit()
-        .transition()
-        .duration( 500 )
-        .attr( "opacity", 0.0 )
-        .remove();
-    }
-
+    d3chart.Chart.renderers[ this._type ]( this );
   }
 
 };

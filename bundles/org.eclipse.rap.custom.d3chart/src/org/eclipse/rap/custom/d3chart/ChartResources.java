@@ -23,7 +23,12 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 
 public class ChartResources {
 
-  private static final String[] CHART_JS_RESOURCES = new String[] { "chart.js", "chart-item.js" };
+  private static final String[] CHART_JS_RESOURCES = new String[] {
+    "chart.js",
+    "chart-item.js",
+    "chart-renderer-bar.js",
+    "chart-renderer-pie.js"
+  };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return ChartResources.class.getClassLoader().getResourceAsStream( "resources/" + resourceName );
@@ -51,7 +56,9 @@ public class ChartResources {
     loader.require( chartLocation + "?nocache=" + System.currentTimeMillis() );
   }
 
-  private static String register( ResourceManager resourceManager, Resource resource ) throws IOException {
+  private static String register( ResourceManager resourceManager, Resource resource )
+    throws IOException
+  {
     String location;
     InputStream inputStream = resource.getInputStream();
     String resourceName = resource.getName();
@@ -65,14 +72,14 @@ public class ChartResources {
   }
 
   private static InputStream concatResources( ResourceLoader loader, String... resourceNames )
-      throws IOException
-    {
-      Vector<InputStream> inputStreams = new Vector<InputStream>( resourceNames.length );
-      for( String resourceName : resourceNames ) {
-        inputStreams.add( loader.getResourceAsStream( resourceName ) );
-      }
-      return new SequenceInputStream( inputStreams.elements() );
+    throws IOException
+  {
+    Vector<InputStream> inputStreams = new Vector<InputStream>( resourceNames.length );
+    for( String resourceName : resourceNames ) {
+      inputStreams.add( loader.getResourceAsStream( resourceName ) );
     }
+    return new SequenceInputStream( inputStreams.elements() );
+  }
 
   private static class Resource {
 

@@ -39,20 +39,22 @@ public class CircleChartExample implements IExamplePage {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     createChartPart( parent );
     createControlPart( parent );
+    createItems();
+    updateItems( dataSet.getRow( 0 ) );
   }
 
   private void createChartPart( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    chart = new Chart( composite, SWT.BORDER );
+    chart = new Chart( composite, SWT.NONE );
     chart.setType( "pie" );
-    chart.setLayoutData( new GridData( 300, 200 ) );
+    chart.setLayoutData( new GridData( 300, 300 ) );
   }
 
   private void createControlPart( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, false ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 2, true, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
     createButton( composite, "Prev", new Listener() {
       public void handleEvent( Event event ) {
@@ -64,13 +66,6 @@ public class CircleChartExample implements IExamplePage {
         showNext();
       }
     } );
-    createButton( composite, "Resize chart", new Listener() {
-      public void handleEvent( Event event ) {
-        resizeChart();
-      }
-    } );
-    createItems();
-    updateItems( dataSet.getRow( 0 ) );
   }
 
   private void createButton( Composite parent, String text, Listener listener ) {
@@ -120,15 +115,6 @@ public class CircleChartExample implements IExamplePage {
     String text = format.format( value * 100 ) + "%";
     item.setValue( value );
     item.setText( text );
-  }
-
-  private void resizeChart() {
-    if( chart.getSize().x > 350 ) {
-      chart.setLayoutData( new GridData( 300, 200 ) );
-    } else {
-      chart.setLayoutData( new GridData( 400, 300 ) );
-    }
-    chart.getParent().layout();
   }
 
 }
