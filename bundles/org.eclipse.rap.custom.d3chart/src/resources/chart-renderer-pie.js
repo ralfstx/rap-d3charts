@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 d3chart.Chart.renderers.pie = function( chart ) {
-  var barWidth = 40;
+  var barWidth = 50;
   var startAngle = -90;
   var endAngle = 270;
   var centerX = chart._width / 2;
@@ -30,13 +30,20 @@ d3chart.Chart.renderers.pie = function( chart ) {
   var arc = d3.svg.arc()
     .outerRadius( outerRadius )
     .innerRadius( innerRadius );
-  var selection = layer.selectAll( "path.piechart_slice" )
+
+  var selection = layer.selectAll( "g.piece" )
     .data( layout( chart._items ), function( item ) { return item.data._rwtId; } );
+
   selection
-    .attr( "fill", function( item ) { return item.data.getColor(); } )
     .transition()
     .duration( 1000 )
-    .attr( "opacity", 1.0 )
+    .attr( "opacity", 1.0 );
+
+  selection
+    .select( "path" )
+    .transition()
+    .duration( 1000 )
+    .attr( "fill", function( item ) { return item.data.getColor(); } )
     .attrTween( "d", function( datum ) {
       var previous = this._buffer;
       var interpolate = d3.interpolate( previous, datum );
@@ -44,20 +51,48 @@ d3chart.Chart.renderers.pie = function( chart ) {
       return function( t ) {
         return arc( interpolate( t ) );
       };
-    })
-  ;
-  selection.enter().append( "svg:path" )
-    .attr( "class", "piechart_slice" )
+    } );
+
+  selection
+    .select( "text" )
+    .transition()
+    .duration( 500 )
     .attr( "opacity", 0.0 )
+    .transition()
+    .duration( 0 )
+    .attr( "transform", function( datum ) { return "translate(" + arc.centroid( datum ) + ")"; } )
+    .attr( "dy", ".35em" )
+    .attr( "text-anchor", "middle" )
+    .text( function( item ) { return item.data.getText(); } )
+    .transition()
+    .duration( 500 )
+    .attr( "opacity", 1.0 )
+    ;
+
+  var enter = selection.enter().append( "svg:g" )
+    .attr( "class", "piece" )
+    .attr( "opacity", 0.0 );
+
+  enter.append( "svg:path" )
     .attr( "fill", function( item ) { return item.data.getColor(); } )
     .attr( "d", arc )
     .each( function( datum ) {
       this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
-    } )
+    } );
+
+  enter.append( "svg:text" )
+    .attr( "opacity", 1.0 )
+    .attr( "style", "font: 11px sans-serif; fill: white;" )
+    .attr( "transform", function( datum ) { return "translate(" + arc.centroid( datum ) + ")"; } )
+    .attr( "dy", ".35em" )
+    .attr( "text-anchor", "middle" )
+    .text( function( item ) { return item.data.getText(); } );
+
+  enter
     .transition()
     .duration( 1500 )
-    .attr( "opacity", 1.0 )
-  ;
+    .attr( "opacity", 1.0 );
+
   selection.exit()
     .transition()
     .duration( 500 )

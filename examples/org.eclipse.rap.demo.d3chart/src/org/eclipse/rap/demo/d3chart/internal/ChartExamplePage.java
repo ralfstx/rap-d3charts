@@ -40,8 +40,8 @@ public class ChartExamplePage implements IExamplePage {
     composite.setLayout( new FormLayout() );
     mainArea = createMainArea( composite );
     tabBar = createTabBar( composite );
-    createItem( "Bar", new BarChartExample() );
     createItem( "Circle", new CircleChartExample() );
+    createItem( "Bar", new BarChartExample() );
     showPage( subPages.get( 0 ) );
   }
 

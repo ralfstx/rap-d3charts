@@ -112,7 +112,7 @@ public class CircleChartExample implements IExamplePage {
 
   private void updateItem( ChartItem item, double value ) {
     DecimalFormat format = new DecimalFormat( "#.#" );
-    String text = format.format( value * 100 ) + "%";
+    String text = value > 5 ? format.format( value ) + "%" : "";
     item.setValue( value );
     item.setText( text );
   }
