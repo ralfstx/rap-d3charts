@@ -45,6 +45,10 @@ d3chart.ChartItem.prototype = {
   setText: function( text ) {
     this._text = text;
     this._chart._scheduleUpdate();
+  },
+
+  id: function() {
+    return this._rwtId;
   }
 
 };

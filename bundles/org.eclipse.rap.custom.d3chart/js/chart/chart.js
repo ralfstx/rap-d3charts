@@ -11,8 +11,8 @@
 
 d3chart = {};
 
-d3chart.Chart = function( parent ) {
-  this._type = "bar";
+d3chart.Chart = function( parent, renderer ) {
+  this._renderer = renderer;
   var element = document.createElement( "div" );
   element.style.position = "absolute";
   element.style.left = "0px";
@@ -26,8 +26,12 @@ d3chart.Chart = function( parent ) {
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   var that = this;
   rap.on( "render", function() {
-    if( that._dirty ) {
-      that._redraw();
+    if( that._resized || that._dirty ) {
+      if( that._resized ) {
+        that._renderer.initialize( that );
+        that._resized = false;
+      }
+      that._renderer.render( that );
       that._dirty = false;
     }
   } );
@@ -37,21 +41,19 @@ d3chart.Chart = function( parent ) {
   this._resize( parent.getClientArea() );
 };
 
-d3chart.Chart.renderers = {};
-
 d3chart.Chart.prototype = {
 
   getElement: function() {
     return this._element;
   },
 
-  setType: function( type ) {
-    this._type = type;
-    this._scheduleUpdate();
-  },
-
-  getType: function() {
-    return this._type;
+  getLayer: function( name ) {
+    var layer = this._svg.select( "g." + name );
+    if( layer.empty() ) {
+      this._svg.append( "svg:g" ).attr( "class", name );
+      layer = this._svg.select( "g." + name );
+    }
+    return layer;
   },
 
   _addItem: function( item ) {
@@ -70,57 +72,18 @@ d3chart.Chart.prototype = {
     this._width = clientArea[ 2 ];
     this._height = clientArea[ 3 ];
     this._svg.attr( "width", this._width ).attr( "height", this._height );
-    this._scheduleUpdate();
+    this._resized = true;
   },
 
   _scheduleUpdate: function() {
     this._dirty = true;
   },
 
-  _redraw: function() {
-    d3chart.Chart.renderers[ this._type ]( this );
+  destroy: function() {
+    var element = this._element;
+    if( element.parentNode ) {
+      element.parentNode.removeChild( element );
+    }
   }
 
 };
-
-// TYPE HANDLERS
-
-rap.registerTypeHandler( "d3chart.BarChart", {
-
-  factory : function( properties ) {
-    var parent = rap.getObject( properties.parent );
-    var chart = new d3chart.Chart( parent );
-    chart.setType( "bar" );
-    return chart;
-  },
-
-  destructor : function( widget ) {
-    var el = widget.getElement();
-    if( el.parentNode ) {
-      el.parentNode.removeChild( el );
-    }
-  },
-
-  properties: [ "type" ]
-
-} );
-
-rap.registerTypeHandler( "d3chart.PieChart", {
-
-  factory : function( properties ) {
-    var parent = rap.getObject( properties.parent );
-    var chart = new d3chart.Chart( parent );
-    chart.setType( "pie" );
-    return chart;
-  },
-
-  destructor : function( widget ) {
-    var el = widget.getElement();
-    if( el.parentNode ) {
-      el.parentNode.removeChild( el );
-    }
-  },
-
-  properties: [ "type" ]
-
-} );
