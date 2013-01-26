@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
+import static org.eclipse.rap.custom.d3chart.TestUtil.fakeConnection;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
@@ -123,13 +122,6 @@ public class Chart_Test {
     chart.removeItem( item );
 
     assertEquals( 0, chart.getItems().length );
-  }
-
-  private static Connection fakeConnection( RemoteObject remoteObject ) {
-    Connection connection = mock( Connection.class );
-    when( connection.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeConnection( connection );
-    return connection;
   }
 
 }

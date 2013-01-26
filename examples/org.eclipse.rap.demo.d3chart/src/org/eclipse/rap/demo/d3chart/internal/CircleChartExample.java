@@ -33,7 +33,7 @@ public class CircleChartExample implements IExamplePage {
 
   private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
   private final DataSet dataSet = ExampleData.VERSION_YEARLY;
-  private Chart chart;
+  private PieChart pieChart;
   private int cursor;
 
   public void createControl( Composite parent ) {
@@ -48,8 +48,8 @@ public class CircleChartExample implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    chart = new PieChart( composite, SWT.NONE );
-    chart.setLayoutData( new GridData( 300, 300 ) );
+    pieChart = new PieChart( composite, SWT.NONE );
+    pieChart.setLayoutData( new GridData( 300, 300 ) );
   }
 
   private void createControlPart( Composite parent ) {
@@ -66,6 +66,28 @@ public class CircleChartExample implements IExamplePage {
         showNext();
       }
     } );
+    createButton( composite, "180°", new Listener() {
+      public void handleEvent( Event event ) {
+        pieChart.setStartAngle( -0.25f );
+        pieChart.setEndAngle( 0.25f );
+      }
+    } );
+    createButton( composite, "360°", new Listener() {
+      public void handleEvent( Event event ) {
+        pieChart.setStartAngle( 0f );
+        pieChart.setEndAngle( 1f );
+      }
+    } );
+    createButton( composite, "ring", new Listener() {
+      public void handleEvent( Event event ) {
+        pieChart.setInnerRadius( 0.6f );
+      }
+    } );
+    createButton( composite, "circle", new Listener() {
+      public void handleEvent( Event event ) {
+        pieChart.setInnerRadius( 0f );
+      }
+    } );
   }
 
   private void createButton( Composite parent, String text, Listener listener ) {
@@ -77,8 +99,8 @@ public class CircleChartExample implements IExamplePage {
   private void createItems() {
     int columnCount = dataSet.getColumnCount();
     for( int i = 0; i < columnCount; i++ ) {
-      Color color = colors.next( chart.getDisplay() );
-      addItem( chart, color );
+      Color color = colors.next( pieChart.getDisplay() );
+      addItem( pieChart, color );
     }
   }
 
@@ -104,7 +126,7 @@ public class CircleChartExample implements IExamplePage {
 
   private void updateItems( Item row ) {
     float[] values = row.getValues();
-    ChartItem[] items = chart.getItems();
+    ChartItem[] items = pieChart.getItems();
     for( int i = 0; i < items.length; i++ ) {
       updateItem( items[ i ], values[ i ] );
     }

@@ -10,15 +10,15 @@
  ******************************************************************************/
 
 d3chart.PieChartRenderer = function() {
-  this._startAngle = -90;
-  this._endAngle = 270;
+  this._startAngle = 0;
+  this._endAngle = 2 * Math.PI;
   this._outerRadius = 1;
-  this._innerRadius = 0.5;
+  this._innerRadius = 0;
   this._arc = d3.svg.arc();
   this._layout = d3.layout.pie().sort( null )
     .value( function( item ) { return item.getValue(); } )
-    .startAngle( this._startAngle * Math.PI / 180  )
-    .endAngle( this._endAngle * Math.PI / 180  );
+    .startAngle( this._startAngle )
+    .endAngle( this._endAngle );
 };
 
 d3chart.PieChartRenderer.prototype = {
@@ -28,6 +28,23 @@ d3chart.PieChartRenderer.prototype = {
     this._updateLayout();
   },
 
+  setStartAngle: function( angle ) {
+    this._startAngle = angle;
+    this._layout.startAngle( this._startAngle );
+    this._chart._scheduleUpdate();
+  },
+
+  setEndAngle: function( angle ) {
+    this._endAngle = angle;
+    this._layout.endAngle( this._endAngle );
+    this._chart._scheduleUpdate();
+  },
+
+  setInnerRadius: function( radius ) {
+    this._innerRadius = radius;
+    this._chart._scheduleUpdate( true );
+  },
+
   _updateLayout: function() {
     var centerX = this._chart._width / 2;
     var centerY = this._chart._height / 2;
@@ -35,9 +52,6 @@ d3chart.PieChartRenderer.prototype = {
     this._arc
       .outerRadius( this._outerRadius * ( maxRadius ) )
       .innerRadius( this._innerRadius * ( maxRadius ) );
-    this._layout
-      .startAngle( this._startAngle * Math.PI / 180  )
-      .endAngle( this._endAngle * Math.PI / 180  );
     this._layer = this._chart.getLayer( "layer" );
     this._layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
   },
@@ -141,11 +155,15 @@ rap.registerTypeHandler( "d3chart.PieChart", {
   factory : function( properties ) {
     var parent = rap.getObject( properties.parent );
     var renderer = new d3chart.PieChartRenderer();
-    return new d3chart.Chart( parent, renderer );
+    var chart = new d3chart.Chart( parent, renderer );
+    chart.setStartAngle = function( angle ) { renderer.setStartAngle( angle ); };
+    chart.setEndAngle = function( angle ) { renderer.setEndAngle( angle ); };
+    chart.setInnerRadius = function( radius ) { renderer.setInnerRadius( radius ); };
+    return chart;
   },
 
   destructor : "destroy",
 
-  properties: [ "type" ]
+  properties: [ "startAngle", "endAngle", "innerRadius" ]
 
 } );

@@ -24,15 +24,16 @@ d3chart.Chart = function( parent, renderer ) {
   this._padding = 20;
   this._items = [];
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
+  this._needsLayout = true;
   var that = this;
   rap.on( "render", function() {
-    if( that._resized || that._dirty ) {
-      if( that._resized ) {
+    if( that._needsRender ) {
+      if( that._needsLayout ) {
         that._renderer.initialize( that );
-        that._resized = false;
+        that._needsLayout = false;
       }
       that._renderer.render( that );
-      that._dirty = false;
+      that._needsRender = false;
     }
   } );
   parent.addListener( "Resize", function() {
@@ -72,11 +73,14 @@ d3chart.Chart.prototype = {
     this._width = clientArea[ 2 ];
     this._height = clientArea[ 3 ];
     this._svg.attr( "width", this._width ).attr( "height", this._height );
-    this._resized = true;
+    this._scheduleUpdate( true );
   },
 
-  _scheduleUpdate: function() {
-    this._dirty = true;
+  _scheduleUpdate: function( needsLayout ) {
+    if( needsLayout ) {
+      this._needsLayout = true;
+    }
+    this._needsRender = true;
   },
 
   destroy: function() {

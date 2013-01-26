@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Composite;
 @SuppressWarnings( "restriction" )
 public abstract class Chart extends Canvas {
 
-  private final RemoteObject remoteObject;
   private final List<ChartItem> items;
+  protected final RemoteObject remoteObject;
 
   public Chart( Composite parent, int style ) {
     super( parent, style );
