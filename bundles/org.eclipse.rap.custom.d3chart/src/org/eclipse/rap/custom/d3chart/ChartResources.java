@@ -24,14 +24,14 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 public class ChartResources {
 
   private static final String[] CHART_JS_RESOURCES = new String[] {
-    "chart.js",
-    "chart-item.js",
-    "chart-renderer-bar.js",
-    "chart-renderer-pie.js"
+    "chart/chart.js",
+    "chart/chart-item.js",
+    "chart/chart-renderer-bar.js",
+    "chart/chart-renderer-pie.js"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
-      return ChartResources.class.getClassLoader().getResourceAsStream( "resources/" + resourceName );
+      return ChartResources.class.getClassLoader().getResourceAsStream( resourceName );
     }
   };
 
@@ -41,13 +41,12 @@ public class ChartResources {
     ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
     try {
       // TODO register resources only once
-      d3Location = register( resourceManager, new Resource( "d3.v3.min.js", RESOURCE_LOADER ) );
-      chartLocation = register( resourceManager, new Resource( "d3chart.js", RESOURCE_LOADER ) {
-        @Override
-        public InputStream getInputStream() throws IOException {
-          return concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES );
-        }
-      } );
+      d3Location = register( resourceManager,
+                             "lib/d3.v3.min.js",
+                             RESOURCE_LOADER.getResourceAsStream( "resources/d3.v3.min.js" ) );
+      chartLocation = register( resourceManager,
+                                "d3chart/d3chart.js",
+                                concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );
     } catch( IOException exception ) {
       throw new RuntimeException( "Failed to register resource", exception );
     }
@@ -56,15 +55,14 @@ public class ChartResources {
     loader.require( chartLocation + "?nocache=" + System.currentTimeMillis() );
   }
 
-  private static String register( ResourceManager resourceManager, Resource resource )
-    throws IOException
+  private static String register( ResourceManager resourceManager,
+                                  String registerPath,
+                                  InputStream inputStream ) throws IOException
   {
     String location;
-    InputStream inputStream = resource.getInputStream();
-    String resourceName = resource.getName();
     try {
-      resourceManager.register( resourceName, inputStream );
-      location = resourceManager.getLocation( resourceName );
+      resourceManager.register( registerPath, inputStream );
+      location = resourceManager.getLocation( registerPath );
     } finally {
       inputStream.close();
     }
@@ -79,26 +77,6 @@ public class ChartResources {
       inputStreams.add( loader.getResourceAsStream( resourceName ) );
     }
     return new SequenceInputStream( inputStreams.elements() );
-  }
-
-  private static class Resource {
-
-    private final String name;
-    private final ResourceLoader loader;
-
-    public Resource( String name, ResourceLoader loader ) {
-      this.name = name;
-      this.loader = loader;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public InputStream getInputStream() throws IOException {
-      return loader.getResourceAsStream( name );
-    }
-
   }
 
 }
