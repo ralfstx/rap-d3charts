@@ -57,18 +57,18 @@ d3chart.ChartItem.prototype = {
 
 rap.registerTypeHandler( "d3chart.ChartItem", {
 
-  factory : function( properties ) {
+  factory: function( properties ) {
     var chart = rap.getObject( properties.parent );
     var item = new d3chart.ChartItem( chart );
     chart._addItem( item );
     return item;
   },
 
-  destructor : function( item ) {
+  destructor: function( item ) {
     item.getChart()._removeItem( item );
   },
 
-  properties : [
+  properties: [
     "value", "color", "text"
   ],
 

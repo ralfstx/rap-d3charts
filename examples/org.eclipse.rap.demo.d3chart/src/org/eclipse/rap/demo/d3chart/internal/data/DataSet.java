@@ -77,8 +77,19 @@ public class DataSet {
   private void readColumns( String[] elements ) {
     columns = new ArrayList<String>( elements.length - 1 );
     for( int i = 0; i < elements.length - 1; i++ ) {
-      columns.add( elements[ i + 1 ] );
+      columns.add( stripQuotes( elements[ i + 1 ] ) );
     }
+  }
+
+  private static String stripQuotes( String text ) {
+    String result = text;
+    if( result.startsWith( "\"" ) ) {
+      result = result.substring( 1 );
+    }
+    if( result.endsWith( "\"" ) ) {
+      result = result.substring( 0, result.length() - 1 );
+    }
+    return result;
   }
 
   private void readValues( String[] elements ) {

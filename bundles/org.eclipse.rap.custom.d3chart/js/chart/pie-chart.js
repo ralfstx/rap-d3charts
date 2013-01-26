@@ -31,18 +31,24 @@ d3chart.PieChartRenderer.prototype = {
   setStartAngle: function( angle ) {
     this._startAngle = angle;
     this._layout.startAngle( this._startAngle );
-    this._chart._scheduleUpdate();
+    if( this._chart ) {
+      this._chart._scheduleUpdate();
+    }
   },
 
   setEndAngle: function( angle ) {
     this._endAngle = angle;
     this._layout.endAngle( this._endAngle );
-    this._chart._scheduleUpdate();
+    if( this._chart ) {
+      this._chart._scheduleUpdate();
+    }
   },
 
   setInnerRadius: function( radius ) {
     this._innerRadius = radius;
-    this._chart._scheduleUpdate( true );
+    if( this._chart ) {
+      this._chart._scheduleUpdate( true );
+    }
   },
 
   _updateLayout: function() {
@@ -56,7 +62,7 @@ d3chart.PieChartRenderer.prototype = {
     this._layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
   },
 
-  render : function( chart ) {
+  render: function( chart ) {
     var selection = this._layer.selectAll( "g.piece" )
       .data( this._layout( chart._items ), function( datum ) { return datum.data.id(); } );
     this._show( selection );
@@ -66,11 +72,13 @@ d3chart.PieChartRenderer.prototype = {
   },
 
   _createPieces: function( selection ) {
+    var that = this;
     var newGroups = selection.append( "svg:g" )
       .attr( "class", "piece" )
       .attr( "opacity", 0.0 );
     this._createPaths( newGroups );
     this._createTexts( newGroups );
+    newGroups.on( "click", function( datum, index ) { that._chart._selectItem( index ); } );
     this._show( newGroups );
   },
 
@@ -153,7 +161,7 @@ d3chart.PieChartRenderer.prototype = {
 
 rap.registerTypeHandler( "d3chart.PieChart", {
 
-  factory : function( properties ) {
+  factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
     var renderer = new d3chart.PieChartRenderer();
     var chart = new d3chart.Chart( parent, renderer );
@@ -163,8 +171,10 @@ rap.registerTypeHandler( "d3chart.PieChart", {
     return chart;
   },
 
-  destructor : "destroy",
+  destructor: "destroy",
 
-  properties: [ "startAngle", "endAngle", "innerRadius" ]
+  properties: [ "startAngle", "endAngle", "innerRadius" ],
+
+  events: [ "Selection" ]
 
 } );

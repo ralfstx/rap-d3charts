@@ -31,7 +31,7 @@ d3chart.BarChartRenderer.prototype = {
     this._chart._scheduleUpdate();
   },
 
-  render : function( chart ) {
+  render: function( chart ) {
     this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
     var selection = this._layer.selectAll( "g.item" )
       .data( chart._items, function( item ) { return item.id(); } );
@@ -41,9 +41,11 @@ d3chart.BarChartRenderer.prototype = {
   },
 
   _createElements: function( selection ) {
+    var that = this;
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
+    items.on( "click", function( datum, index ) { that._chart._selectItem( index ); } );
     this._createBars( items );
     this._createTexts( items );
   },
@@ -113,7 +115,7 @@ d3chart.BarChartRenderer.prototype = {
 
 rap.registerTypeHandler( "d3chart.BarChart", {
 
-  factory : function( properties ) {
+  factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
     var renderer = new d3chart.BarChartRenderer();
     var chart = new d3chart.Chart( parent, renderer );
@@ -122,8 +124,10 @@ rap.registerTypeHandler( "d3chart.BarChart", {
     return chart;
   },
 
-  destructor : "destroy",
+  destructor: "destroy",
 
-  properties: [ "barWidth", "spacing" ]
+  properties: [ "barWidth", "spacing" ],
+
+  events: [ "Selection" ]
 
 } );

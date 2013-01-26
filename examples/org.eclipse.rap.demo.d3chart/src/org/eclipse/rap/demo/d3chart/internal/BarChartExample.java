@@ -61,33 +61,33 @@ public class BarChartExample implements IExamplePage {
         addItem( pieChart, value, color );
         addItem( barChart, value, color );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Remove item", new Listener() {
       public void handleEvent( Event event ) {
         removeItem( pieChart );
         removeItem( barChart );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "small bars", new Listener() {
       public void handleEvent( Event event ) {
         barChart.setBarWidth( 20 );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "large bars", new Listener() {
       public void handleEvent( Event event ) {
-        barChart.setBarWidth( 50 );
+        barChart.setBarWidth( 40 );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "spacing", new Listener() {
       public void handleEvent( Event event ) {
-        barChart.setSpacing( 4 );
+        barChart.setSpacing( 2 );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "no spacing", new Listener() {
       public void handleEvent( Event event ) {
         barChart.setSpacing( 0 );
       }
-    } );
+    } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Resize charts", new Listener() {
       public void handleEvent( Event event ) {
         if( pieChart.getSize().x > 350 ) {
@@ -102,10 +102,11 @@ public class BarChartExample implements IExamplePage {
     } );
   }
 
-  private void createButton( Composite parent, String text, Listener listener ) {
+  private static Button createButton( Composite parent, String text, Listener listener ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
     button.addListener( SWT.Selection, listener );
+    return button;
   }
 
   private void addItem( Chart chart, double value, Color color ) {
