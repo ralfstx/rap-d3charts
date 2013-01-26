@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Listener;
 
 public class BarChartExample implements IExamplePage {
 
-  private Chart barChart;
-  private Chart pieChart;
+  private BarChart barChart;
+  private PieChart pieChart;
   private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
 
   public void createControl( Composite parent ) {
@@ -52,7 +52,7 @@ public class BarChartExample implements IExamplePage {
 
   private void createControlPart( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, false ) );
+    composite.setLayout( ExampleUtil.createGridLayout( 2, true, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
@@ -66,6 +66,26 @@ public class BarChartExample implements IExamplePage {
       public void handleEvent( Event event ) {
         removeItem( pieChart );
         removeItem( barChart );
+      }
+    } );
+    createButton( composite, "small bars", new Listener() {
+      public void handleEvent( Event event ) {
+        barChart.setBarWidth( 20 );
+      }
+    } );
+    createButton( composite, "large bars", new Listener() {
+      public void handleEvent( Event event ) {
+        barChart.setBarWidth( 50 );
+      }
+    } );
+    createButton( composite, "spacing", new Listener() {
+      public void handleEvent( Event event ) {
+        barChart.setSpacing( 4 );
+      }
+    } );
+    createButton( composite, "no spacing", new Listener() {
+      public void handleEvent( Event event ) {
+        barChart.setSpacing( 0 );
       }
     } );
     createButton( composite, "Resize charts", new Listener() {

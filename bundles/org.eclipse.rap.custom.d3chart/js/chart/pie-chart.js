@@ -88,7 +88,9 @@ d3chart.PieChartRenderer.prototype = {
     var that = this;
     selection.append( "svg:text" )
       .attr( "opacity", 1.0 )
-      .attr( "style", "font: 11px sans-serif; fill: white;" )
+      .style( "font-family", "sans-serif" )
+      .style( "font-size", "11px" )
+      .style( "fill", "white" )
       .attr( "transform", function( datum ) { return "translate(" + that._arc.centroid( datum ) + ")"; } )
       .attr( "dy", ".35em" )
       .attr( "text-anchor", "middle" )
@@ -130,8 +132,7 @@ d3chart.PieChartRenderer.prototype = {
       .text( function( item ) { return item.data.getText(); } )
       .transition()
       .duration( 500 )
-      .attr( "opacity", 1.0 )
-      ;
+      .attr( "opacity", 1.0 );
   },
 
   _removePieces: function( selection ) {

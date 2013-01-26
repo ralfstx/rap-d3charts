@@ -16,14 +16,40 @@ import org.eclipse.swt.widgets.Composite;
 public class BarChart extends Chart {
 
   private static final String REMOTE_TYPE = "d3chart.BarChart";
+  private int barWidth;
+  private int spacing;
 
   public BarChart( Composite parent, int style ) {
     super( parent, style );
+    barWidth = 25;
+    spacing = 2;
   }
 
   @Override
   protected String getRemoteType() {
     return REMOTE_TYPE;
+  }
+
+  public int getBarWidth() {
+    return barWidth;
+  }
+
+  public void setBarWidth( int width ) {
+    if( width != barWidth ) {
+      barWidth = width;
+      remoteObject.set( "barWidth", width );
+    }
+  }
+
+  public int getSpacing() {
+    return spacing;
+  }
+
+  public void setSpacing( int width ) {
+    if( width != spacing ) {
+      spacing = width;
+      remoteObject.set( "spacing", width );
+    }
   }
 
 }
