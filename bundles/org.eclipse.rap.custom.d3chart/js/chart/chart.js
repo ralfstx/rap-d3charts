@@ -83,13 +83,34 @@ d3chart.Chart.prototype = {
 
 };
 
-// TYPE HANDLER
+// TYPE HANDLERS
 
-rap.registerTypeHandler( "d3chart.Chart", {
+rap.registerTypeHandler( "d3chart.BarChart", {
 
   factory : function( properties ) {
     var parent = rap.getObject( properties.parent );
     var chart = new d3chart.Chart( parent );
+    chart.setType( "bar" );
+    return chart;
+  },
+
+  destructor : function( widget ) {
+    var el = widget.getElement();
+    if( el.parentNode ) {
+      el.parentNode.removeChild( el );
+    }
+  },
+
+  properties: [ "type" ]
+
+} );
+
+rap.registerTypeHandler( "d3chart.PieChart", {
+
+  factory : function( properties ) {
+    var parent = rap.getObject( properties.parent );
+    var chart = new d3chart.Chart( parent );
+    chart.setType( "pie" );
     return chart;
   },
 

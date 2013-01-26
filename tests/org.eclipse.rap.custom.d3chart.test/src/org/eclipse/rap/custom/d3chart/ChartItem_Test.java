@@ -46,7 +46,7 @@ public class ChartItem_Test {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    chart = new Chart( shell, SWT.NONE );
+    chart = new TestChart( shell, SWT.NONE );
   }
 
   @After

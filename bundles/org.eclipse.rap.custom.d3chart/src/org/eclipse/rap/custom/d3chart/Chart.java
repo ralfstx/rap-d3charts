@@ -22,17 +22,15 @@ import org.eclipse.swt.widgets.Composite;
 
 
 @SuppressWarnings( "restriction" )
-public class Chart extends Canvas {
+public abstract class Chart extends Canvas {
 
-  private static final String REMOTE_TYPE = "d3chart.Chart";
   private final RemoteObject remoteObject;
   private final List<ChartItem> items;
-  private String type = "bar";
 
   public Chart( Composite parent, int style ) {
     super( parent, style );
     items = new ArrayList<ChartItem>();
-    remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
+    remoteObject = RWT.getUISession().getConnection().createRemoteObject( getRemoteType() );
     remoteObject.set( "parent", WidgetUtil.getId( this ) );
     ChartResources.ensureJavaScriptResources();
   }
@@ -41,20 +39,13 @@ public class Chart extends Canvas {
     return items.toArray( new ChartItem[ 0 ] );
   }
 
-  public void setType( String type ) {
-    this.type = type;
-    remoteObject.set( "type", type );
-  }
-
-  public String getType() {
-    return type;
-  }
-
   @Override
   public void dispose() {
     super.dispose();
     remoteObject.destroy();
   }
+
+  protected abstract String getRemoteType();
 
   void addItem( ChartItem item ) {
     items.add( item );

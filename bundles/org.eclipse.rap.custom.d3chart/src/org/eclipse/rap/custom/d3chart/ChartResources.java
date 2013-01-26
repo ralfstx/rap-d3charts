@@ -26,8 +26,8 @@ public class ChartResources {
   private static final String[] CHART_JS_RESOURCES = new String[] {
     "chart/chart.js",
     "chart/chart-item.js",
-    "chart/chart-renderer-bar.js",
-    "chart/chart-renderer-pie.js"
+    "chart/bar-chart.js",
+    "chart/pie-chart.js"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
     public InputStream getResourceAsStream( String resourceName ) throws IOException {

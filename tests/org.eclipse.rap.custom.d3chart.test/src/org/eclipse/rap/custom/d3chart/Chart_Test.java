@@ -51,7 +51,7 @@ public class Chart_Test {
 
   @Test
   public void testCreate() {
-    Chart chart = new Chart( shell, SWT.BORDER );
+    Chart chart = new TestChart( shell, SWT.BORDER );
 
     assertEquals( shell, chart.getParent() );
     assertEquals( SWT.BORDER, chart.getStyle() & SWT.BORDER );
@@ -59,10 +59,10 @@ public class Chart_Test {
 
   @Test
   public void testCreate_registeresJavaScriptResource() {
-    new Chart( shell, SWT.NONE );
+    new TestChart( shell, SWT.NONE );
 
-    assertTrue( RWT.getResourceManager().isRegistered( "d3.v3.min.js" ) );
-    assertTrue( RWT.getResourceManager().isRegistered( "d3chart.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.v3.min.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "d3chart/d3chart.js" ) );
   }
 
   @Test
@@ -70,9 +70,9 @@ public class Chart_Test {
     RemoteObject remoteObject = mock( RemoteObject.class );
     Connection connection = fakeConnection( remoteObject );
 
-    new Chart( shell, SWT.NONE );
+    new TestChart( shell, SWT.NONE );
 
-    verify( connection ).createRemoteObject( eq( "d3chart.Chart" ) );
+    verify( connection ).createRemoteObject( eq( TestChart.REMOTE_TYPE ) );
   }
 
   @Test
@@ -80,7 +80,7 @@ public class Chart_Test {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
 
-    Chart chart = new Chart( shell, SWT.NONE );
+    Chart chart = new TestChart( shell, SWT.NONE );
 
     verify( remoteObject ).set( eq( "parent" ), eq( WidgetUtil.getId( chart ) ) );
   }
@@ -89,7 +89,7 @@ public class Chart_Test {
   public void testDispose_destroysRemoteObject() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
-    Chart chart = new Chart( shell, SWT.NONE );
+    Chart chart = new TestChart( shell, SWT.NONE );
 
     chart.dispose();
 
@@ -98,14 +98,14 @@ public class Chart_Test {
 
   @Test
   public void testGetItems_emptyByDefault() {
-    Chart chart = new Chart( shell, SWT.BORDER );
+    Chart chart = new TestChart( shell, SWT.NONE );
 
     assertEquals( 0, chart.getItems().length );
   }
 
   @Test
   public void testAddItem() {
-    Chart chart = new Chart( shell, SWT.BORDER );
+    Chart chart = new TestChart( shell, SWT.NONE );
     ChartItem item = mock( ChartItem.class );
 
     chart.addItem( item );
@@ -116,43 +116,13 @@ public class Chart_Test {
 
   @Test
   public void testRemoveItem() {
-    Chart chart = new Chart( shell, SWT.BORDER );
+    Chart chart = new TestChart( shell, SWT.NONE );
     ChartItem item = mock( ChartItem.class );
     chart.addItem( item );
 
     chart.removeItem( item );
 
     assertEquals( 0, chart.getItems().length );
-  }
-
-  @Test
-  public void type_defaultsToBar() {
-    Chart chart = new Chart( shell, SWT.BORDER );
-
-    String type = chart.getType();
-
-    assertEquals( "bar", type );
-  }
-
-  @Test
-  public void type_canBeChanged() {
-    Chart chart = new Chart( shell, SWT.BORDER );
-
-    chart.setType( "pie" );
-    String type = chart.getType();
-
-    assertEquals( "pie", type );
-  }
-
-  @Test
-  public void type_isRenderedToRemote() {
-    RemoteObject remoteObject = mock( RemoteObject.class );
-    fakeConnection( remoteObject );
-    Chart chart = new Chart( shell, SWT.BORDER );
-
-    chart.setType( "pie" );
-
-    verify( remoteObject ).set( eq( "type" ), eq( "pie" ) );
   }
 
   private static Connection fakeConnection( RemoteObject remoteObject ) {

@@ -12,9 +12,11 @@ package org.eclipse.rap.demo.d3chart.internal;
 
 import java.text.DecimalFormat;
 
+import org.eclipse.rap.custom.d3chart.BarChart;
 import org.eclipse.rap.custom.d3chart.Chart;
 import org.eclipse.rap.custom.d3chart.ChartItem;
 import org.eclipse.rap.custom.d3chart.ColorSequence;
+import org.eclipse.rap.custom.d3chart.PieChart;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
@@ -42,11 +44,9 @@ public class BarChartExample implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    pieChart = new Chart( composite, SWT.BORDER );
-    pieChart.setType( "pie" );
+    pieChart = new PieChart( composite, SWT.BORDER );
     pieChart.setLayoutData( new GridData( 300, 200 ) );
-    barChart = new Chart( composite, SWT.BORDER );
-    barChart.setType( "bar" );
+    barChart = new BarChart( composite, SWT.BORDER );
     barChart.setLayoutData( new GridData( 300, 300 ) );
   }
 

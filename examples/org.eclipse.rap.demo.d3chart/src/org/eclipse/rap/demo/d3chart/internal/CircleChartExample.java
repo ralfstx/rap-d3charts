@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import org.eclipse.rap.custom.d3chart.Chart;
 import org.eclipse.rap.custom.d3chart.ChartItem;
 import org.eclipse.rap.custom.d3chart.ColorSequence;
+import org.eclipse.rap.custom.d3chart.PieChart;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet.Item;
 import org.eclipse.rap.demo.d3chart.internal.data.ExampleData;
@@ -47,8 +48,7 @@ public class CircleChartExample implements IExamplePage {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
-    chart = new Chart( composite, SWT.NONE );
-    chart.setType( "pie" );
+    chart = new PieChart( composite, SWT.NONE );
     chart.setLayoutData( new GridData( 300, 300 ) );
   }
 
