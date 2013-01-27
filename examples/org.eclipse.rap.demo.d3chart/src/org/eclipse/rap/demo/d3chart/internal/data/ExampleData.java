@@ -15,19 +15,16 @@ import java.io.IOException;
 
 public class ExampleData {
 
-  private static final String RESOURCE_VERSION_MONTHLY = "browser_version_partially_combined-ww-monthly-200807-201301.csv";
-  private static final String RESOURCE_VERSION_QUARTERLY = "browser_version_partially_combined-ww-quarterly-200803-201301.csv";
-  private static final String RESOURCE_VERSION_YEARLY = "browser_version_partially_combined-ww-yearly-2008-2013.csv";
-  private static final String RESOURCE_BROWSER_MONTHLY = "browser-ww-monthly-200807-201301.csv";
-  private static final String RESOURCE_BROWSER_QUARTERLY = "browser-ww-quarterly-200803-201301.csv";
-  private static final String RESOURCE_BROWSER_YEARLY = "browser-ww-yearly-2008-2013.csv";
-
-  public static final DataSet VERSION_MONTHLY = createDataSet( RESOURCE_VERSION_MONTHLY );
-  public static final DataSet VERSION_QUARTERLY = createDataSet( RESOURCE_VERSION_QUARTERLY );
-  public static final DataSet VERSION_YEARLY = createDataSet( RESOURCE_VERSION_YEARLY );
-  public static final DataSet BROWSER_MONTHLY = createDataSet( RESOURCE_BROWSER_MONTHLY );
-  public static final DataSet BROWSER_QUARTERLY = createDataSet( RESOURCE_BROWSER_QUARTERLY );
-  public static final DataSet BROWSER_YEARLY = createDataSet( RESOURCE_BROWSER_YEARLY );
+  public static final DataSet VERSION_MONTHLY = createDataSet( "browser_version_partially_combined-ww-monthly-200807-201301.csv" );
+  public static final DataSet VERSION_QUARTERLY = createDataSet( "browser_version_partially_combined-ww-quarterly-200803-201301.csv" );
+  public static final DataSet VERSION_YEARLY = createDataSet( "browser_version_partially_combined-ww-yearly-2008-2013.csv" );
+  public static final DataSet BROWSER_MONTHLY = createDataSet( "browser-ww-monthly-200807-201301.csv" );
+  public static final DataSet BROWSER_QUARTERLY = createDataSet( "browser-ww-quarterly-200803-201301.csv" );
+  public static final DataSet BROWSER_QUARTERLY_EUROPE = createDataSet( "browser-eu-quarterly-200803-201301.csv" );
+  public static final DataSet BROWSER_QUARTERLY_NORTHAMERICA = createDataSet( "browser-na-quarterly-200803-201301.csv" );
+  public static final DataSet BROWSER_QUARTERLY_ASIA = createDataSet( "browser-as-quarterly-200803-201301.csv" );
+  public static final DataSet BROWSER_QUARTERLY_AFRICA = createDataSet( "browser-af-quarterly-200803-201301.csv" );
+  public static final DataSet BROWSER_YEARLY = createDataSet( "browser-ww-yearly-2008-2013.csv" );
 
   private static DataSet createDataSet( String resourceName ) {
     try {
