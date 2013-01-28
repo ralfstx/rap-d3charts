@@ -57,6 +57,14 @@ public class DataSet {
     return rows.size();
   }
 
+  public float[] getValuesForColumn( int index ) {
+    float[] values = new float[ rows.size() ];
+    for( int i = 0; i < values.length; i++ ) {
+      values[ i ] = rows.get( i ).values[ index ];
+    }
+    return values;
+  }
+
   private void read( BufferedReader reader ) throws IOException {
     String line = reader.readLine();
     while( line != null ) {

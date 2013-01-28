@@ -12,6 +12,7 @@
 d3chart.ChartItem = function( chart ) {
   this._chart = chart;
   this._value = 0;
+  this._values = [];
 };
 
 d3chart.ChartItem.prototype = {
@@ -26,6 +27,15 @@ d3chart.ChartItem.prototype = {
 
   setValue: function( value ) {
     this._value = value;
+    this._chart._scheduleUpdate();
+  },
+
+  getValues: function() {
+    return this._values;
+  },
+
+  setValues: function( values ) {
+    this._values = values;
     this._chart._scheduleUpdate();
   },
 
@@ -69,7 +79,7 @@ rap.registerTypeHandler( "d3chart.ChartItem", {
   },
 
   properties: [
-    "value", "color", "text"
+    "value", "values", "color", "text"
   ],
 
   propertyHandler: {

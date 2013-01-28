@@ -27,6 +27,7 @@ public class ChartResources {
     "chart/chart.js",
     "chart/chart-item.js",
     "chart/bar-chart.js",
+    "chart/stream-chart.js",
     "chart/pie-chart.js"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {

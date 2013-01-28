@@ -42,6 +42,7 @@ public class ChartExamplePage implements IExamplePage {
     tabBar = createTabBar( composite );
     createItem( "Circle", new PieChartExample() );
     createItem( "Bar", new BarChartExample() );
+    createItem( "Area", new AreaChartExample() );
     showPage( subPages.get( 0 ) );
   }
 

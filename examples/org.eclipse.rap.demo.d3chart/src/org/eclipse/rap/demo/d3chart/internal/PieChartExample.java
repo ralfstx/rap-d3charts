@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class PieChartExample implements IExamplePage {
 
-  private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
-  private final DataSet dataSet = ExampleData.BROWSER_YEARLY;
+  private ColorSequence colors;
+  private DataSet dataSet;
   private PieChart pieChart;
   private int cursor;
   private Table table;
@@ -46,6 +46,8 @@ public class PieChartExample implements IExamplePage {
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
+    dataSet = ExampleData.BROWSER_YEARLY;
+    colors = new ColorSequence( ColorSequence.CAT10_COLORS );
     createChartPart( parent );
     createControlPart( parent );
     createItems();
