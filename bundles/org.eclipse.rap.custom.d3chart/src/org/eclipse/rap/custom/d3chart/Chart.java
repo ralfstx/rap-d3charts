@@ -48,10 +48,6 @@ public abstract class Chart extends Canvas {
           notifyListeners( SWT.Selection, event );
         }
       }
-      @Override
-      public void handleCall( String method, Map<String,Object> parameters ) {
-        // TODO remove, sending a call as a workaround for missing notify operations
-      }
     } );
     ChartResources.ensureJavaScriptResources();
   }
