@@ -14,7 +14,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import org.eclipse.rap.custom.d3chart.ChartItem;
-import org.eclipse.rap.custom.d3chart.ColorSequence;
+import org.eclipse.rap.custom.d3chart.ColorStream;
+import org.eclipse.rap.custom.d3chart.Colors;
 import org.eclipse.rap.custom.d3chart.PieChart;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet.Item;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class PieChartExample implements IExamplePage {
 
-  private ColorSequence colors;
+  private ColorStream colors;
   private DataSet dataSet;
   private PieChart pieChart;
   private int cursor;
@@ -47,7 +48,7 @@ public class PieChartExample implements IExamplePage {
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_YEARLY;
-    colors = new ColorSequence( ColorSequence.CAT10_COLORS );
+    colors = Colors.CAT10_COLORS.loop();
     createChartPart( parent );
     createControlPart( parent );
     createItems();
@@ -142,7 +143,7 @@ public class PieChartExample implements IExamplePage {
   private void createItems() {
     List<String> columns = dataSet.getColumns();
     for( String column : columns ) {
-      Color color = colors.next( pieChart.getDisplay() );
+      Color color = new Color( pieChart.getDisplay(), colors.next() );
       addItem( color, column );
     }
   }

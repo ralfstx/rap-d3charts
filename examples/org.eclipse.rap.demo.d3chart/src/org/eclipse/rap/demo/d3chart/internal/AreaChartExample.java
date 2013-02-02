@@ -13,13 +13,15 @@ package org.eclipse.rap.demo.d3chart.internal;
 import java.util.List;
 
 import org.eclipse.rap.custom.d3chart.ChartItem;
-import org.eclipse.rap.custom.d3chart.ColorSequence;
+import org.eclipse.rap.custom.d3chart.ColorStream;
+import org.eclipse.rap.custom.d3chart.Colors;
 import org.eclipse.rap.custom.d3chart.StreamChart;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet;
 import org.eclipse.rap.demo.d3chart.internal.data.ExampleData;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -31,12 +33,12 @@ public class AreaChartExample implements IExamplePage {
 
   private DataSet dataSet;
   private StreamChart chart;
-  private ColorSequence colors;
+  private ColorStream colors;
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_QUARTERLY_EUROPE;
-    colors = new ColorSequence( ColorSequence.CAT10_COLORS );
+    colors = Colors.CAT10_COLORS.loop();
     createChartPart( parent );
     createControlPart( parent );
   }
@@ -68,7 +70,7 @@ public class AreaChartExample implements IExamplePage {
     for( String browser : columns ) {
       ChartItem item = new ChartItem( chart );
       item.setText( browser );
-      item.setColor( colors.next( item.getDisplay() ) );
+      item.setColor( new Color( item.getDisplay(), colors.next() ) );
     }
   }
 

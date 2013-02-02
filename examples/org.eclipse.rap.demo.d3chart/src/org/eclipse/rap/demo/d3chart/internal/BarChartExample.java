@@ -15,7 +15,8 @@ import java.text.DecimalFormat;
 import org.eclipse.rap.custom.d3chart.BarChart;
 import org.eclipse.rap.custom.d3chart.Chart;
 import org.eclipse.rap.custom.d3chart.ChartItem;
-import org.eclipse.rap.custom.d3chart.ColorSequence;
+import org.eclipse.rap.custom.d3chart.ColorStream;
+import org.eclipse.rap.custom.d3chart.Colors;
 import org.eclipse.rap.custom.d3chart.PieChart;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
@@ -32,7 +33,7 @@ public class BarChartExample implements IExamplePage {
 
   private BarChart barChart;
   private PieChart pieChart;
-  private final ColorSequence colors = new ColorSequence( ColorSequence.CAT10_COLORS );
+  private final ColorStream colors = Colors.CAT10_COLORS.loop();
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
@@ -57,7 +58,7 @@ public class BarChartExample implements IExamplePage {
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
         double value = Math.random() * 0.8;
-        Color color = colors.next( barChart.getDisplay() );
+        Color color = new Color( barChart.getDisplay(), colors.next() );
         addItem( pieChart, value, color );
         addItem( barChart, value, color );
       }
