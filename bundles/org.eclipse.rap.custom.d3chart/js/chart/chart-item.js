@@ -13,6 +13,7 @@ d3chart.ChartItem = function( parent ) {
   this._parent = parent;
   this._value = 0;
   this._values = [];
+  this._parent._chart._addItem( this );
 };
 
 d3chart.ChartItem.prototype = {
@@ -44,7 +45,8 @@ d3chart.ChartItem.prototype = {
   },
 
   setColor: function( color ) {
-    this._color = color;
+    var hex = function( value ) { return ( value < 16 ? "0" : "" ) + value.toString( 16 ); };
+    this._color = "#" + hex( color[0] ) + hex( color[1] ) + hex( color[2] );
     this._parent._chart._scheduleUpdate();
   },
 
@@ -59,6 +61,10 @@ d3chart.ChartItem.prototype = {
 
   id: function() {
     return this._rwtId;
+  },
+
+  destroy: function() {
+    this.getParent()._chart._removeItem( this );
   }
 
 };
@@ -69,24 +75,11 @@ rap.registerTypeHandler( "d3chart.ChartItem", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var item = new d3chart.ChartItem( parent );
-    parent._chart._addItem( item );
-    return item;
+    return new d3chart.ChartItem( parent );
   },
 
-  destructor: function( item ) {
-    item.getParent()._chart._removeItem( item );
-  },
+  destructor: "destroy",
 
-  properties: [
-    "value", "values", "color", "text"
-  ],
-
-  propertyHandler: {
-    "color": function( chartItem, value ) {
-      var hex = function( value ) { return ( value < 16 ? "0" : "" ) + value.toString( 16 ); };
-      chartItem.setColor( "#" + hex( value[0] ) + hex( value[1] ) + hex( value[2] ) );
-    }
-  }
+  properties: [ "value", "values", "color", "text" ]
 
 } );
