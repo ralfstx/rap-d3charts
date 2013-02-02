@@ -9,7 +9,7 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.PieChartRenderer = function() {
+d3chart.PieChart = function( parent ) {
   this._startAngle = 0;
   this._endAngle = 2 * Math.PI;
   this._outerRadius = 1;
@@ -19,12 +19,16 @@ d3chart.PieChartRenderer = function() {
     .value( function( item ) { return item.getValue(); } )
     .startAngle( this._startAngle )
     .endAngle( this._endAngle );
+  this._chart = new d3chart.Chart( parent, this );
 };
 
-d3chart.PieChartRenderer.prototype = {
+d3chart.PieChart.prototype = {
 
-  initialize: function( chart ) {
-    this._chart = chart;
+  destroy: function() {
+    this._chart.destroy();
+  },
+
+  initialize: function() {
     this._updateLayout();
   },
 
@@ -78,7 +82,7 @@ d3chart.PieChartRenderer.prototype = {
       .attr( "opacity", 0.0 );
     this._createPaths( newGroups );
     this._createTexts( newGroups );
-    newGroups.on( "click", function( datum, index ) { that._chart._selectItem( index ); } );
+    newGroups.on( "click", function( datum, index ) { that._selectItem( index ); } );
     this._show( newGroups );
   },
 
@@ -151,6 +155,11 @@ d3chart.PieChartRenderer.prototype = {
       .remove();
   },
 
+  _selectItem: function( index ) {
+    var remoteObject = rap.getRemoteObject( this );
+    remoteObject.notify( "Selection", { "index": index } );
+  },
+
   _show: function( selection ) {
     selection.transition().duration( 1000 ).attr( "opacity", 1.0 );
   }
@@ -163,12 +172,7 @@ rap.registerTypeHandler( "d3chart.PieChart", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var renderer = new d3chart.PieChartRenderer();
-    var chart = new d3chart.Chart( parent, renderer );
-    chart.setStartAngle = function( angle ) { renderer.setStartAngle( angle ); };
-    chart.setEndAngle = function( angle ) { renderer.setEndAngle( angle ); };
-    chart.setInnerRadius = function( radius ) { renderer.setInnerRadius( radius ); };
-    return chart;
+    return new d3chart.PieChart( parent );
   },
 
   destructor: "destroy",

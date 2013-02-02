@@ -9,12 +9,17 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.BarChartRenderer = function() {
+d3chart.BarChart = function( parent ) {
   this._barWidth = 25;
   this._spacing = 2;
+  this._chart = new d3chart.Chart( parent, this );
 };
 
-d3chart.BarChartRenderer.prototype = {
+d3chart.BarChart.prototype = {
+
+  destroy: function() {
+    this._chart.destroy();
+  },
 
   initialize: function( chart ) {
     this._chart = chart;
@@ -45,7 +50,7 @@ d3chart.BarChartRenderer.prototype = {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { that._chart._selectItem( index ); } );
+    items.on( "click", function( datum, index ) { that._selectItem( index ); } );
     this._createBars( items );
     this._createTexts( items );
   },
@@ -105,6 +110,11 @@ d3chart.BarChartRenderer.prototype = {
       .remove();
   },
 
+  _selectItem: function( index ) {
+    var remoteObject = rap.getRemoteObject( this );
+    remoteObject.notify( "Selection", { "index": index } );
+  },
+
   _getOffset: function( index ) {
     return this._chart._padding + index * ( this._barWidth + this._spacing );
   }
@@ -117,11 +127,7 @@ rap.registerTypeHandler( "d3chart.BarChart", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var renderer = new d3chart.BarChartRenderer();
-    var chart = new d3chart.Chart( parent, renderer );
-    chart.setBarWidth = function( barWidth ) { renderer.setBarWidth( barWidth ); };
-    chart.setSpacing = function( spacing ) { renderer.setSpacing( spacing ); };
-    return chart;
+    return new d3chart.BarChart( parent );
   },
 
   destructor: "destroy",

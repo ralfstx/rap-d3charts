@@ -9,16 +9,20 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.StreamChartRenderer = function() {
+d3chart.StreamChart = function( parent ) {
   this._stack = d3.layout.stack()
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
+  this._chart = new d3chart.Chart( parent, this );
 };
 
-d3chart.StreamChartRenderer.prototype = {
+d3chart.StreamChart.prototype = {
+
+  destroy: function() {
+    this._chart.destroy();
+  },
 
   initialize: function( chart ) {
-    this._chart = chart;
     this._layer = chart.getLayer( "layer" );
 
     var padding = chart._padding;
@@ -61,7 +65,7 @@ d3chart.StreamChartRenderer.prototype = {
     var items = selection.append( "svg:g" )
       .attr( "class", "item" )
       .attr( "opacity", 1.0 );
-    items.on( "click", function( datum, index ) { that._chart._selectItem( index ); } );
+    items.on( "click", function( datum, index ) { that._selectItem( index ); } );
     this._createStreams( items );
     this._createTexts( items );
   },
@@ -98,6 +102,11 @@ d3chart.StreamChartRenderer.prototype = {
       .duration( 400 )
       .attr( "opacity", 0.0 )
       .remove();
+  },
+
+  _selectItem: function( index ) {
+    var remoteObject = rap.getRemoteObject( this );
+    remoteObject.notify( "Selection", { "index": index } );
   }
 
 };
@@ -108,9 +117,7 @@ rap.registerTypeHandler( "d3chart.StreamChart", {
 
   factory: function( properties ) {
     var parent = rap.getObject( properties.parent );
-    var renderer = new d3chart.StreamChartRenderer();
-    var chart = new d3chart.Chart( parent, renderer );
-    return chart;
+    return new d3chart.StreamChart( parent );
   },
 
   destructor: "destroy",

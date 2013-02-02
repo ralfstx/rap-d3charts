@@ -83,11 +83,6 @@ d3chart.Chart.prototype = {
     this._needsRender = true;
   },
 
-  _selectItem: function( index ) {
-    var remoteObject = rap.getRemoteObject( this );
-    remoteObject.notify( "Selection", { "index": index } );
-  },
-
   destroy: function() {
     var element = this._element;
     if( element.parentNode ) {

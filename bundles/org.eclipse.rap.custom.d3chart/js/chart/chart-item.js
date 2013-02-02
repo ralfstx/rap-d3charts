@@ -9,16 +9,16 @@
  *    Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 
-d3chart.ChartItem = function( chart ) {
-  this._chart = chart;
+d3chart.ChartItem = function( parent ) {
+  this._parent = parent;
   this._value = 0;
   this._values = [];
 };
 
 d3chart.ChartItem.prototype = {
 
-  getChart: function() {
-    return this._chart;
+  getParent: function() {
+    return this._parent;
   },
 
   getValue: function() {
@@ -27,7 +27,7 @@ d3chart.ChartItem.prototype = {
 
   setValue: function( value ) {
     this._value = value;
-    this._chart._scheduleUpdate();
+    this._parent._chart._scheduleUpdate();
   },
 
   getValues: function() {
@@ -36,7 +36,7 @@ d3chart.ChartItem.prototype = {
 
   setValues: function( values ) {
     this._values = values;
-    this._chart._scheduleUpdate();
+    this._parent._chart._scheduleUpdate();
   },
 
   getColor: function() {
@@ -45,7 +45,7 @@ d3chart.ChartItem.prototype = {
 
   setColor: function( color ) {
     this._color = color;
-    this._chart._scheduleUpdate();
+    this._parent._chart._scheduleUpdate();
   },
 
   getText: function() {
@@ -54,7 +54,7 @@ d3chart.ChartItem.prototype = {
 
   setText: function( text ) {
     this._text = text;
-    this._chart._scheduleUpdate();
+    this._parent._chart._scheduleUpdate();
   },
 
   id: function() {
@@ -68,14 +68,14 @@ d3chart.ChartItem.prototype = {
 rap.registerTypeHandler( "d3chart.ChartItem", {
 
   factory: function( properties ) {
-    var chart = rap.getObject( properties.parent );
-    var item = new d3chart.ChartItem( chart );
-    chart._addItem( item );
+    var parent = rap.getObject( properties.parent );
+    var item = new d3chart.ChartItem( parent );
+    parent._chart._addItem( item );
     return item;
   },
 
   destructor: function( item ) {
-    item.getChart()._removeItem( item );
+    item.getParent()._chart._removeItem( item );
   },
 
   properties: [
