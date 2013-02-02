@@ -84,7 +84,8 @@ rap.registerTypeHandler( "d3chart.ChartItem", {
 
   propertyHandler: {
     "color": function( chartItem, value ) {
-      chartItem.setColor( "#" + rwt.util.Colors.rgbToHexString( value ) );
+      var hex = function( value ) { return ( value < 16 ? "0" : "" ) + value.toString( 16 ); };
+      chartItem.setColor( "#" + hex( value[0] ) + hex( value[1] ) + hex( value[2] ) );
     }
   }
 
