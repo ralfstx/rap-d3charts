@@ -13,7 +13,7 @@ d3chart.ChartItem = function( parent ) {
   this._parent = parent;
   this._value = 0;
   this._values = [];
-  this._parent._chart._addItem( this );
+  this._parent.addItem( this );
 };
 
 d3chart.ChartItem.prototype = {
@@ -64,7 +64,7 @@ d3chart.ChartItem.prototype = {
   },
 
   destroy: function() {
-    this.getParent()._chart._removeItem( this );
+    this._parent.removeItem( this );
   }
 
 };

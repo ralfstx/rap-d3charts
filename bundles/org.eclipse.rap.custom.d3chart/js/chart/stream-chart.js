@@ -13,10 +13,21 @@ d3chart.StreamChart = function( parent ) {
   this._stack = d3.layout.stack()
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
+  this._items = new d3chart.ItemList();
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.StreamChart.prototype = {
+
+  addItem: function( item ) {
+    this._items.add( item );
+    this._chart._scheduleUpdate();
+  },
+
+  removeItem: function( item ) {
+    this._items.remove( item );
+    this._chart._scheduleUpdate();
+  },
 
   destroy: function() {
     this._chart.destroy();
@@ -42,9 +53,9 @@ d3chart.StreamChart.prototype = {
       .y1( function( d ) { return that._yScale( d.y0 + d.y ); } );
   },
 
-  render: function( chart ) {
+  render: function() {
 
-    var data = chart._items.map( function( item ) {
+    var data = this._items.map( function( item ) {
       return {
         item: item,
         values: item.getValues().map( function( value, index ) {

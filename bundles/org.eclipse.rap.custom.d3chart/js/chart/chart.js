@@ -22,7 +22,6 @@ d3chart.Chart = function( parent, renderer ) {
   this._element = element;
   parent.append( element );
   this._padding = 20;
-  this._items = [];
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   this._needsLayout = true;
   var that = this;
@@ -55,18 +54,6 @@ d3chart.Chart.prototype = {
       layer = this._svg.select( "g." + name );
     }
     return layer;
-  },
-
-  _addItem: function( item ) {
-    this._items.push( item );
-    this._scheduleUpdate();
-  },
-
-  _removeItem: function( item ) {
-    this._items = this._items.filter( function( element ) {
-      return element !== item;
-    } );
-    this._scheduleUpdate();
   },
 
   _resize: function( clientArea ) {

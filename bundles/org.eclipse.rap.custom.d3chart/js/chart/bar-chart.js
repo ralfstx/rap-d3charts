@@ -12,10 +12,21 @@
 d3chart.BarChart = function( parent ) {
   this._barWidth = 25;
   this._spacing = 2;
+  this._items = new d3chart.ItemList();
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.BarChart.prototype = {
+
+  addItem: function( item ) {
+    this._items.add( item );
+    this._chart._scheduleUpdate();
+  },
+
+  removeItem: function( item ) {
+    this._items.remove( item );
+    this._chart._scheduleUpdate();
+  },
 
   destroy: function() {
     this._chart.destroy();
@@ -39,7 +50,7 @@ d3chart.BarChart.prototype = {
   render: function( chart ) {
     this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
     var selection = this._layer.selectAll( "g.item" )
-      .data( chart._items, function( item ) { return item.id(); } );
+      .data( this._items, function( item ) { return item.id(); } );
     this._createElements( selection.enter() );
     this._updateElements( selection );
     this._removeElements( selection.exit() );

@@ -19,10 +19,21 @@ d3chart.PieChart = function( parent ) {
     .value( function( item ) { return item.getValue(); } )
     .startAngle( this._startAngle )
     .endAngle( this._endAngle );
+  this._items = new d3chart.ItemList();
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.PieChart.prototype = {
+
+  addItem: function( item ) {
+    this._items.add( item );
+    this._chart._scheduleUpdate();
+  },
+
+  removeItem: function( item ) {
+    this._items.remove( item );
+    this._chart._scheduleUpdate();
+  },
 
   destroy: function() {
     this._chart.destroy();
@@ -66,19 +77,19 @@ d3chart.PieChart.prototype = {
     this._layer.attr( "transform", "translate(" + centerX + "," + centerY + ")" );
   },
 
-  render: function( chart ) {
-    var selection = this._layer.selectAll( "g.piece" )
-      .data( this._layout( chart._items ), function( datum ) { return datum.data.id(); } );
+  render: function() {
+    var selection = this._layer.selectAll( "g.segment" )
+      .data( this._layout( this._items ), function( datum ) { return datum.data.id(); } );
     this._show( selection );
-    this._updatePieces( selection );
-    this._createPieces( selection.enter() );
-    this._removePieces( selection.exit() );
+    this._updateSegments( selection );
+    this._createSegments( selection.enter() );
+    this._removeSegments( selection.exit() );
   },
 
-  _createPieces: function( selection ) {
+  _createSegments: function( selection ) {
     var that = this;
     var newGroups = selection.append( "svg:g" )
-      .attr( "class", "piece" )
+      .attr( "class", "segment" )
       .attr( "opacity", 0.0 );
     this._createPaths( newGroups );
     this._createTexts( newGroups );
@@ -109,7 +120,7 @@ d3chart.PieChart.prototype = {
       .text( function( item ) { return item.data.getText(); } );
   },
 
-  _updatePieces: function( selection ) {
+  _updateSegments: function( selection ) {
     this._updatePaths( selection.select( "path" ) );
     this._updateTexts( selection.select( "text" ) );
   },
@@ -147,7 +158,7 @@ d3chart.PieChart.prototype = {
       .attr( "opacity", 1.0 );
   },
 
-  _removePieces: function( selection ) {
+  _removeSegments: function( selection ) {
     selection
       .transition()
       .duration( 500 )
