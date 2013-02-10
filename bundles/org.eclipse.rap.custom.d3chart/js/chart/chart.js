@@ -13,14 +13,7 @@ d3chart = {};
 
 d3chart.Chart = function( parent, renderer ) {
   this._renderer = renderer;
-  var element = document.createElement( "div" );
-  element.style.position = "absolute";
-  element.style.left = "0px";
-  element.style.top = "0px";
-  element.style.width = "100%";
-  element.style.height = "100%";
-  this._element = element;
-  parent.append( element );
+  this._element = this.createElement( parent );
   this._padding = 20;
   this._svg = d3.select( this._element ).append( "svg" ).attr( "class", "chart" );
   this._needsLayout = true;
@@ -43,8 +36,15 @@ d3chart.Chart = function( parent, renderer ) {
 
 d3chart.Chart.prototype = {
 
-  getElement: function() {
-    return this._element;
+  createElement: function( parent ) {
+    var element = document.createElement( "div" );
+    element.style.position = "absolute";
+    element.style.left = "0";
+    element.style.top = "0";
+    element.style.width = "100%";
+    element.style.height = "100%";
+    parent.append( element );
+    return element;
   },
 
   getLayer: function( name ) {
