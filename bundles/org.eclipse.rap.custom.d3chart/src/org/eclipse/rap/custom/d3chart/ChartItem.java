@@ -11,8 +11,8 @@
 package org.eclipse.rap.custom.d3chart;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
-import org.eclipse.rap.rwt.internal.theme.JsonArray;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -48,7 +48,7 @@ public class ChartItem extends Item {
   public void setValues( float[] values ) {
     if( values != this.values ) {
       this.values = values;
-      remoteObject.set( "values", JsonArray.valueOf( values ) );
+      remoteObject.set( "values", JsonUtil.createJsonArray( values ) );
     }
   }
 
@@ -58,7 +58,7 @@ public class ChartItem extends Item {
 
   public void setColor( Color color ) {
     this.color = color;
-    remoteObject.set( "color", ProtocolUtil.getColorAsArray( color, false ) );
+    remoteObject.set( "color", ProtocolUtil.getJsonForColor( color, false ) );
   }
 
   public Color getColor() {

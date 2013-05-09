@@ -12,10 +12,7 @@ package org.eclipse.rap.custom.d3chart;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.remote.RemoteObjectImpl;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -25,6 +22,8 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+
+import org.eclipse.rap.json.JsonObject;
 
 
 @SuppressWarnings( "restriction" )
@@ -40,10 +39,10 @@ public abstract class Chart extends Canvas {
     remoteObject.set( "parent", WidgetUtil.getId( this ) );
     remoteObject.setHandler( new AbstractOperationHandler() {
       @Override
-      public void handleNotify( String eventName, Map<String, Object> properties ) {
+      public void handleNotify( String eventName, JsonObject properties ) {
         if( "Selection".equals( eventName ) ) {
           Event event = new Event();
-          event.index = ( ( Integer )properties.get( "index" ) ).intValue();
+          event.index = properties.get( "index" ).asInt();
           event.item = items.get( event.index );
           notifyListeners( SWT.Selection, event );
         }
@@ -98,7 +97,7 @@ public abstract class Chart extends Canvas {
   }
 
   String getRemoteId() {
-    return ( ( RemoteObjectImpl )remoteObject ).getId();
+    return remoteObject.getId();
   }
 
 }

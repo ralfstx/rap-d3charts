@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -154,7 +155,7 @@ public class ChartItem_Test {
 
     new ChartItem( chart ).setColor( new Color( display, 255, 128, 0 ) );
 
-    int[] expected = ProtocolUtil.getColorAsArray( new Color( display, 255, 128, 0 ), false );
+    JsonValue expected = ProtocolUtil.getJsonForColor( new Color( display, 255, 128, 0 ), false );
     verify( remoteObject ).set( eq( "color" ), eq( expected ) );
   }
 
