@@ -12,8 +12,11 @@ package org.eclipse.rap.demo.d3chart.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -40,10 +43,28 @@ public class ChartExamplePage implements IExamplePage {
     composite.setLayout( new FormLayout() );
     mainArea = createMainArea( composite );
     tabBar = createTabBar( composite );
-    createItem( "Circle", new PieChartExample() );
-    createItem( "Bar", new BarChartExample() );
-    createItem( "Area", new AreaChartExample() );
-    showPage( subPages.get( 0 ) );
+    if( isSupportedBrowser() ) {
+      createItem( "Circle", new PieChartExample() );
+      createItem( "Bar", new BarChartExample() );
+      createItem( "Area", new AreaChartExample() );
+      showPage( subPages.get( 0 ) );
+    } else {
+      Label label = new Label( mainArea, SWT.NONE );
+      label.setText( "Your browser version does not support SVG." );
+    }
+  }
+
+  private boolean isSupportedBrowser() {
+    String userAgent = RWT.getRequest().getHeader( "User-Agent" );
+    if( userAgent != null ) {
+      Pattern pattern = Pattern.compile( ".*MSIE\\s+(\\d+).*" );
+      Matcher matcher = pattern.matcher( userAgent );
+      if( matcher.matches() ) {
+        return Integer.parseInt( matcher.group( 1 ) ) >= 9;
+      }
+      return true;
+    }
+    return false;
   }
 
   private Composite createMainArea( Composite parent ) {

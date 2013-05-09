@@ -21,7 +21,7 @@ public class ChartExampleContribution implements IExampleContribution {
   }
 
   public String getTitle() {
-    return "Charts";
+    return "Charts (experimental)";
   }
 
   public IExamplePage createPage() {
