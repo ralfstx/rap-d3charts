@@ -24,7 +24,7 @@ rap = {
     }
   },
 
-  registerTypeHandler: function( typeHandler ) {
+  registerTypeHandler: function() {
   },
 
   setup: function() {
