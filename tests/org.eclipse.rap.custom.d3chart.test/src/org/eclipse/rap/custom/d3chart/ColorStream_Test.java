@@ -11,11 +11,30 @@
 package org.eclipse.rap.custom.d3chart;
 
 import static org.junit.Assert.*;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class ColorStream_Test {
+
+  private Display display;
+
+  @Before
+  public void setUp() {
+    Fixture.setUp();
+    display = new Display();
+  }
+
+  @After
+  public void tearDown() {
+    Fixture.tearDown();
+  }
 
   @Test( expected = NullPointerException.class )
   public void creationFailsWithNull() {
@@ -24,26 +43,20 @@ public class ColorStream_Test {
 
   @Test
   public void next_loopsWithSingleColor() {
-    ColorStream stream = new ColorStream( new ColorSequence( 23 ) );
+    ColorStream stream = new ColorStream( new ColorSequence( display, new RGB( 0, 0, 1 ) ) );
 
-    RGB color1 = stream.next();
-    RGB color2 = stream.next();
-
-    assertEquals( new RGB( 0, 0, 23 ), color1 );
-    assertEquals( new RGB( 0, 0, 23 ), color2 );
+    assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
+    assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
   }
 
   @Test
   public void next_loopsThroughColors() {
-    ColorStream stream = new ColorStream( new ColorSequence( 23, 42 ) );
+    ColorSequence sequence = new ColorSequence( display, new RGB( 0, 0, 1 ), new RGB( 0, 0, 2 ) );
+    ColorStream stream = new ColorStream( sequence );
 
-    RGB color1 = stream.next();
-    RGB color2 = stream.next();
-    RGB color3 = stream.next();
-
-    assertEquals( new RGB( 0, 0, 23 ), color1 );
-    assertEquals( new RGB( 0, 0, 42 ), color2 );
-    assertEquals( new RGB( 0, 0, 23 ), color3 );
+    assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
+    assertEquals( new Color( display, 0, 0, 2 ), stream.next() );
+    assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
   }
 
 }

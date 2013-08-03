@@ -21,7 +21,6 @@ import org.eclipse.rap.demo.d3chart.internal.data.ExampleData;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -38,7 +37,7 @@ public class AreaChartExample implements IExamplePage {
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_QUARTERLY_EUROPE;
-    colors = Colors.CAT10_COLORS.loop();
+    colors = Colors.cat10Colors( parent.getDisplay() ).loop();
     createChartPart( parent );
     createControlPart( parent );
   }
@@ -70,7 +69,7 @@ public class AreaChartExample implements IExamplePage {
     for( String browser : columns ) {
       ChartItem item = new ChartItem( chart );
       item.setText( browser );
-      item.setColor( new Color( item.getDisplay(), colors.next() ) );
+      item.setColor( colors.next() );
     }
   }
 

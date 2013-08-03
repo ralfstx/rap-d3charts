@@ -31,11 +31,12 @@ import org.eclipse.swt.widgets.Listener;
 
 public class BarChartExample implements IExamplePage {
 
+  private ColorStream colors;
   private BarChart barChart;
   private PieChart pieChart;
-  private final ColorStream colors = Colors.CAT10_COLORS.loop();
 
   public void createControl( Composite parent ) {
+    colors = Colors.cat10Colors( parent.getDisplay() ).loop();
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     createChartPart( parent );
     createControlPart( parent );
@@ -58,7 +59,7 @@ public class BarChartExample implements IExamplePage {
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
         float value = ( float )( Math.random() * 0.8 );
-        Color color = new Color( barChart.getDisplay(), colors.next() );
+        Color color = colors.next();
         addItem( pieChart, value, color );
         addItem( barChart, value, color );
       }

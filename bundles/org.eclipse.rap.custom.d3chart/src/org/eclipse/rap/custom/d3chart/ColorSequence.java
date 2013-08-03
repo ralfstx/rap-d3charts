@@ -17,13 +17,19 @@ import org.eclipse.swt.graphics.RGB;
 
 public class ColorSequence {
 
-  private final int[] colors;
+  private final Color[] colors;
 
-  public ColorSequence( int... colors ) {
-    if( colors.length == 0 ) {
+  public ColorSequence( Device device, RGB... values ) {
+    if( device == null ) {
+      throw new NullPointerException( "Device is null" );
+    }
+    if( values.length == 0 ) {
       throw new IllegalArgumentException( "Cannot create ColorSequence without any colors" );
     }
-    this.colors = colors.clone();
+    colors = new Color[ values.length ];
+    for( int i = 0; i < values.length; i++ ) {
+      colors[ i ] = new Color( device, values[ i ] );
+    }
   }
 
   public ColorStream loop() {
@@ -34,13 +40,14 @@ public class ColorSequence {
     return colors.length;
   }
 
-  public RGB get( int index ) {
-    int value = colors[ index ];
-    return new RGB( value >> 16 & 0xff, value >> 8 & 0xff, value & 0xff );
+  public Color get( int index ) {
+    return colors[ index ];
   }
 
-  public Color get( Device device, int index ) {
-    return new Color( device, get( index ) );
+  public void dispose() {
+    for( int i = 0; i < colors.length; i++ ) {
+      colors[ i ].dispose();
+    }
   }
 
 }

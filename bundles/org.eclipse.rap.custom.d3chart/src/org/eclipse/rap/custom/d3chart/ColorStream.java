@@ -13,7 +13,7 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 
 
 public class ColorStream {
@@ -28,7 +28,7 @@ public class ColorStream {
     this.sequence = sequence;
   }
 
-  public RGB next() {
+  public Color next() {
     return sequence.get( index++ % sequence.size() );
   }
 
