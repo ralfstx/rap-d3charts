@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
+import java.util.Arrays;
+
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.JsonUtil;
 import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -25,44 +27,46 @@ public class ChartItem extends Item {
 
   private static final String REMOTE_TYPE = "d3chart.ChartItem";
   private final RemoteObject remoteObject;
-  private double value;
+  private float value;
   private float[] values;
   private Color color;
 
   public ChartItem( Chart chart ) {
     super( chart, SWT.NONE );
     chart.addItem( this );
-    value = 0;
-    color = chart.getDisplay().getSystemColor( SWT.COLOR_BLACK );
     remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", chart.getRemoteId() );
   }
 
-  public void setValue( double value ) {
-    if( value != this.value ) {
+  public float getValue() {
+    return value;
+  }
+
+  public void setValue( float value ) {
+    if( this.value != value ) {
       this.value = value;
       remoteObject.set( "value", value );
     }
   }
 
-  public void setValues( float[] values ) {
-    if( values != this.values ) {
-      this.values = values;
-      remoteObject.set( "values", JsonUtil.createJsonArray( values ) );
+  public float[] getValues() {
+    return values == null ? null : values.clone();
+  }
+
+  public void setValues( float... values ) {
+    if( !Arrays.equals( this.values, values ) ) {
+      this.values = values.clone();
+      remoteObject.set( "values", jsonArray( values ) );
     }
   }
 
-  public double getValue() {
-    return value;
+  public Color getColor() {
+    return color == null ? getChart().getDisplay().getSystemColor( SWT.COLOR_BLACK ) : color;
   }
 
   public void setColor( Color color ) {
     this.color = color;
-    remoteObject.set( "color", ProtocolUtil.getJsonForColor( color, false ) );
-  }
-
-  public Color getColor() {
-    return color;
+    remoteObject.set( "color", ProtocolUtil.getJsonForColor( getColor(), false ) );
   }
 
   @Override
@@ -80,6 +84,15 @@ public class ChartItem extends Item {
 
   private Chart getChart() {
     return ( Chart )getAdapter( WidgetAdapter.class ).getParent();
+  }
+
+  private static JsonArray jsonArray( float[] values ) {
+    // TODO use array.addAll in future versions
+    JsonArray array = new JsonArray();
+    for( int i = 0; i < values.length; i++ ) {
+      array.add( values[ i ] );
+    }
+    return array;
   }
 
 }

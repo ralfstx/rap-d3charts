@@ -22,7 +22,7 @@ import java.util.List;
 public class DataSet {
 
   private List<String> columns;
-  private final List<Item> rows = new ArrayList<Item>();
+  private final List<DataItem> rows = new ArrayList<DataItem>();
 
   public DataSet( String resourceName ) throws IOException {
     InputStream inputStream = DataSet.class.getClassLoader().getResourceAsStream( resourceName );
@@ -45,11 +45,11 @@ public class DataSet {
     return columns.size();
   }
 
-  public Item getRow( int index ) {
+  public DataItem getRow( int index ) {
     return rows.get( index );
   }
 
-  public List<Item> getRows() {
+  public List<DataItem> getRows() {
     return Collections.unmodifiableList( rows );
   }
 
@@ -106,14 +106,14 @@ public class DataSet {
     for( int i = 0; i < values.length; i++ ) {
       values[ i ] = Float.parseFloat( elements[ i + 1 ].trim() );
     }
-    rows.add( new Item( text, values ) );
+    rows.add( new DataItem( text, values ) );
   }
 
-  public static class Item {
+  public static class DataItem {
     private final String text;
     private final float[] values;
 
-    public Item( String text, float[] values ) {
+    public DataItem( String text, float[] values ) {
       this.text = text;
       this.values = values;
     }

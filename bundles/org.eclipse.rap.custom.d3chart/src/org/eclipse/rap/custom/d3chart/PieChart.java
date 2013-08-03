@@ -16,20 +16,13 @@ import org.eclipse.swt.widgets.Composite;
 public class PieChart extends Chart {
 
   private static final String REMOTE_TYPE = "d3chart.PieChart";
-  private float startAngle;
-  private float endAngle;
-  private float innerRadius;
+
+  private float startAngle = 0;
+  private float endAngle = 1;
+  private float innerRadius = 0;
 
   public PieChart( Composite parent, int style ) {
-    super( parent, style );
-    startAngle = 0;
-    endAngle = 1;
-    innerRadius = 0;
-  }
-
-  @Override
-  protected String getRemoteType() {
-    return REMOTE_TYPE;
+    super( parent, style, REMOTE_TYPE );
   }
 
   public float getStartAngle() {

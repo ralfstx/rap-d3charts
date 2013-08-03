@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
-import java.util.ArrayList;
+import static org.eclipse.rap.rwt.lifecycle.WidgetUtil.getId;
+
+import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -22,7 +24,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-
 import org.eclipse.rap.json.JsonObject;
 
 
@@ -32,11 +33,11 @@ public abstract class Chart extends Canvas {
   private final List<ChartItem> items;
   protected final RemoteObject remoteObject;
 
-  public Chart( Composite parent, int style ) {
+  public Chart( Composite parent, int style, String remoteType ) {
     super( parent, style );
-    items = new ArrayList<ChartItem>();
-    remoteObject = RWT.getUISession().getConnection().createRemoteObject( getRemoteType() );
-    remoteObject.set( "parent", WidgetUtil.getId( this ) );
+    items = new LinkedList<ChartItem>();
+    remoteObject = RWT.getUISession().getConnection().createRemoteObject( remoteType );
+    remoteObject.set( "parent", getId( this ) );
     remoteObject.setHandler( new AbstractOperationHandler() {
       @Override
       public void handleNotify( String eventName, JsonObject properties ) {
@@ -85,8 +86,6 @@ public abstract class Chart extends Canvas {
   protected void removeListener( int eventType, SWTEventListener listener ) {
     super.removeListener( eventType, listener );
   }
-
-  protected abstract String getRemoteType();
 
   void addItem( ChartItem item ) {
     items.add( item );

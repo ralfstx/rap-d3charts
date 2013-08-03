@@ -49,7 +49,18 @@ public class ColorSequence_Test {
   }
 
   @Test
-  public void keepsSafeCopyOfColors() {
+  public void loop_createsLoopingStream() {
+    ColorSequence sequence = new ColorSequence( 1, 2 );
+
+    ColorStream stream = sequence.loop();
+
+    assertEquals( new RGB( 0, 0, 1 ), stream.next() );
+    assertEquals( new RGB( 0, 0, 2 ), stream.next() );
+    assertEquals( new RGB( 0, 0, 1 ), stream.next() );
+  }
+
+  @Test
+  public void keepsSafeCopyOfColorsArray() {
     int[] colors = { 1, 2, 3 };
     ColorSequence sequence = new ColorSequence( colors );
 
@@ -75,6 +86,13 @@ public class ColorSequence_Test {
     RGB color = sequence.get( 0 );
 
     assertEquals( new RGB( 0x12, 0xab, 0xfe ), color );
+  }
+
+  @Test( expected = IndexOutOfBoundsException.class )
+  public void get_failsWithNegativeIndex() {
+    ColorSequence sequence = new ColorSequence( 0x12abfe );
+
+    sequence.get( -1 );
   }
 
 }

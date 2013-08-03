@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Unit Tests for D3 Charts
 Bundle-SymbolicName: org.eclipse.rap.custom.d3chart.test
 Bundle-Version: 0.0.1.qualifier
-Bundle-Vendor: Eclipse - RAP Incubator
+Bundle-Vendor: EclipseSource
 Fragment-Host: org.eclipse.rap.custom.d3chart;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit;bundle-version="4.8.2",

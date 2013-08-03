@@ -18,7 +18,7 @@ import org.eclipse.rap.custom.d3chart.ColorStream;
 import org.eclipse.rap.custom.d3chart.Colors;
 import org.eclipse.rap.custom.d3chart.PieChart;
 import org.eclipse.rap.demo.d3chart.internal.data.DataSet;
-import org.eclipse.rap.demo.d3chart.internal.data.DataSet.Item;
+import org.eclipse.rap.demo.d3chart.internal.data.DataSet.DataItem;
 import org.eclipse.rap.demo.d3chart.internal.data.ExampleData;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
@@ -171,7 +171,7 @@ public class PieChartExample implements IExamplePage {
     }
   }
 
-  private void updateItems( Item row ) {
+  private void updateItems( DataItem row ) {
     yearLabel.setText( row.getText() );
     float[] values = row.getValues();
     ChartItem[] items = pieChart.getItems();
@@ -181,7 +181,7 @@ public class PieChartExample implements IExamplePage {
     }
   }
 
-  private void updateItems( ChartItem chartItem, TableItem tableItem, double value ) {
+  private void updateItems( ChartItem chartItem, TableItem tableItem, float value ) {
     String text = new DecimalFormat( "#.#" ).format( value ) + "%";
     chartItem.setValue( value );
     chartItem.setText( value > 5 ? text : "" );

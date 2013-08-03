@@ -18,12 +18,7 @@ public class StreamChart extends Chart {
   private static final String REMOTE_TYPE = "d3chart.StreamChart";
 
   public StreamChart( Composite parent, int style ) {
-    super( parent, style );
-  }
-
-  @Override
-  protected String getRemoteType() {
-    return REMOTE_TYPE;
+    super( parent, style, REMOTE_TYPE );
   }
 
 }

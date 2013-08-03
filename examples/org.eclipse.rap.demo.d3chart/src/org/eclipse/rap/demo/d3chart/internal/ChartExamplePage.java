@@ -44,9 +44,9 @@ public class ChartExamplePage implements IExamplePage {
     mainArea = createMainArea( composite );
     tabBar = createTabBar( composite );
     if( isSupportedBrowser() ) {
-      createItem( "Circle", new PieChartExample() );
-      createItem( "Bar", new BarChartExample() );
-      createItem( "Area", new AreaChartExample() );
+      createNavItem( "Circle", new PieChartExample() );
+      createNavItem( "Bar", new BarChartExample() );
+      createNavItem( "Area", new AreaChartExample() );
       showPage( subPages.get( 0 ) );
     } else {
       Label label = new Label( mainArea, SWT.NONE );
@@ -97,7 +97,7 @@ public class ChartExamplePage implements IExamplePage {
     return bar;
   }
 
-  private void createItem( String text, final IExamplePage page ) {
+  private void createNavItem( String text, final IExamplePage page ) {
     subPages.add( page );
     final Label label = new Label( tabBar, SWT.NONE );
     label.setText( text );

@@ -55,7 +55,7 @@ public class Chart_Test {
 
   @Test
   public void testCreate() {
-    Chart chart = new TestChart( shell, SWT.BORDER );
+    Chart chart = new Chart( shell, SWT.BORDER, "foo" ) {};
 
     assertEquals( shell, chart.getParent() );
     assertEquals( SWT.BORDER, chart.getStyle() & SWT.BORDER );
@@ -63,7 +63,7 @@ public class Chart_Test {
 
   @Test
   public void testCreate_registeresJavaScriptResource() {
-    new TestChart( shell, SWT.NONE );
+    new Chart( shell, SWT.BORDER, "foo" ) {};
 
     assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.v3.min.js" ) );
     assertTrue( RWT.getResourceManager().isRegistered( "d3chart/d3chart.js" ) );
@@ -71,21 +71,21 @@ public class Chart_Test {
 
   @Test
   public void testCreate_createsRemoteObject() {
-    new TestChart( shell, SWT.NONE );
+    new Chart( shell, SWT.BORDER, "remote type" ) {};
 
-    verify( connection ).createRemoteObject( eq( TestChart.REMOTE_TYPE ) );
+    verify( connection ).createRemoteObject( eq( "remote type" ) );
   }
 
   @Test
   public void testCreate_setsRemoteParent() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.BORDER, "remote type" ) {};
 
     verify( remoteObject ).set( eq( "parent" ), eq( WidgetUtil.getId( chart ) ) );
   }
 
   @Test
   public void testDispose_destroysRemoteObject() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.BORDER, "remote type" ) {};
 
     chart.dispose();
 
@@ -94,14 +94,14 @@ public class Chart_Test {
 
   @Test
   public void testGetItems_emptyByDefault() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
 
     assertEquals( 0, chart.getItems().length );
   }
 
   @Test
   public void testAddItem() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
     ChartItem item = mock( ChartItem.class );
 
     chart.addItem( item );
@@ -112,7 +112,7 @@ public class Chart_Test {
 
   @Test
   public void testRemoveItem() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
     ChartItem item = mock( ChartItem.class );
     chart.addItem( item );
 
@@ -123,7 +123,7 @@ public class Chart_Test {
 
   @Test
   public void testAddListener_isRendered() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
 
     chart.addListener( SWT.Selection, mock( Listener.class ) );
 
@@ -132,9 +132,9 @@ public class Chart_Test {
 
   @Test
   public void testAddListener_isRenderedOnlyOnce() {
-    Chart chart = new TestChart( shell, SWT.NONE );
-    chart.addListener( SWT.Selection, mock( Listener.class ) );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
 
+    chart.addListener( SWT.Selection, mock( Listener.class ) );
     chart.addListener( SWT.Selection, mock( Listener.class ) );
 
     verify( remoteObject, times( 1 ) ).listen( "Selection", true );
@@ -142,7 +142,7 @@ public class Chart_Test {
 
   @Test
   public void testRemoveListener_isRendered() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
     Listener listener = mock( Listener.class );
     chart.addListener( SWT.Selection, listener );
 
@@ -153,11 +153,11 @@ public class Chart_Test {
 
   @Test
   public void testRemoveListener_isRenderedOnlyOnce() {
-    Chart chart = new TestChart( shell, SWT.NONE );
+    Chart chart = new Chart( shell, SWT.BORDER, "remote type" ) {};
     Listener listener = mock( Listener.class );
     chart.addListener( SWT.Selection, listener );
-    chart.removeListener( SWT.Selection, listener );
 
+    chart.removeListener( SWT.Selection, listener );
     chart.removeListener( SWT.Selection, listener );
 
     verify( remoteObject, times( 1 ) ).listen( "Selection", false );

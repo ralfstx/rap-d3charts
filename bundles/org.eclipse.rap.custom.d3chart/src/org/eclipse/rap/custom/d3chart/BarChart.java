@@ -16,18 +16,12 @@ import org.eclipse.swt.widgets.Composite;
 public class BarChart extends Chart {
 
   private static final String REMOTE_TYPE = "d3chart.BarChart";
-  private int barWidth;
-  private int spacing;
+
+  private int barWidth = 25;
+  private int spacing = 2;
 
   public BarChart( Composite parent, int style ) {
-    super( parent, style );
-    barWidth = 25;
-    spacing = 2;
-  }
-
-  @Override
-  protected String getRemoteType() {
-    return REMOTE_TYPE;
+    super( parent, style, REMOTE_TYPE );
   }
 
   public int getBarWidth() {

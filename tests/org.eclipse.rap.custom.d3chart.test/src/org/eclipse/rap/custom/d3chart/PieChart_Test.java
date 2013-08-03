@@ -79,7 +79,7 @@ public class PieChart_Test {
 
     pieChart.setInnerRadius( 0.5f );
 
-    verify( remoteObject ).set( eq( "innerRadius" ), eq( 0.5 ) );
+    verify( remoteObject ).set( eq( "innerRadius" ), eq( 0.5f ) );
   }
 
   @Test

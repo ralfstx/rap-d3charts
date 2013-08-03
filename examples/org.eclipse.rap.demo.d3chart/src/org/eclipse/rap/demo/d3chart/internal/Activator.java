@@ -18,16 +18,17 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-  private static final String EXAMPLE_CONTRIB = IExampleContribution.class.getName();
-
   private ServiceRegistration<?> registration;
 
   public void start( BundleContext context ) throws Exception {
     ChartExampleContribution contribution = new ChartExampleContribution();
-    registration = context.registerService( EXAMPLE_CONTRIB, contribution, null );
+    registration = context.registerService( IExampleContribution.class.getName(),
+                                            contribution,
+                                            null );
   }
 
   public void stop( BundleContext context ) throws Exception {
     registration.unregister();
   }
+
 }

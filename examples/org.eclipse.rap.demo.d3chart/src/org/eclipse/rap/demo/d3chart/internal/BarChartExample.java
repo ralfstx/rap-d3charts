@@ -57,7 +57,7 @@ public class BarChartExample implements IExamplePage {
     composite.setLayoutData( ExampleUtil.createFillData() );
     createButton( composite, "Add item", new Listener() {
       public void handleEvent( Event event ) {
-        double value = Math.random() * 0.8;
+        float value = ( float )( Math.random() * 0.8 );
         Color color = new Color( barChart.getDisplay(), colors.next() );
         addItem( pieChart, value, color );
         addItem( barChart, value, color );
@@ -110,7 +110,7 @@ public class BarChartExample implements IExamplePage {
     return button;
   }
 
-  private void addItem( Chart chart, double value, Color color ) {
+  private void addItem( Chart chart, float value, Color color ) {
     ChartItem item = new ChartItem( chart );
     item.setValue( value );
     DecimalFormat format = new DecimalFormat( "#.#" );
