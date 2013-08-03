@@ -18,12 +18,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -97,6 +99,14 @@ public class Chart_Test {
     Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
 
     assertEquals( 0, chart.getItems().length );
+  }
+
+  @Test( expected = SWTException.class )
+  public void testGetItems_checksWidget() {
+    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
+    chart.dispose();
+
+    chart.getItems();
   }
 
   @Test

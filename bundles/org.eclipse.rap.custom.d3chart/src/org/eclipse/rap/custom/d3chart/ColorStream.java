@@ -25,10 +25,16 @@ public class ColorStream {
     if( sequence == null ) {
       throw new NullPointerException( "sequence is null" );
     }
+    if( sequence.isDisposed() ) {
+      throw new IllegalStateException( "sequence is disposed" );
+    }
     this.sequence = sequence;
   }
 
   public Color next() {
+    if( sequence.isDisposed() ) {
+      throw new IllegalStateException( "sequence is disposed" );
+    }
     return sequence.get( index++ % sequence.size() );
   }
 

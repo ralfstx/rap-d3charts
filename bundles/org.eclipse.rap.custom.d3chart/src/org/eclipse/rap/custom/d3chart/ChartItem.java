@@ -39,10 +39,12 @@ public class ChartItem extends Item {
   }
 
   public float getValue() {
+    checkWidget();
     return value;
   }
 
   public void setValue( float value ) {
+    checkWidget();
     if( this.value != value ) {
       this.value = value;
       remoteObject.set( "value", value );
@@ -50,10 +52,12 @@ public class ChartItem extends Item {
   }
 
   public float[] getValues() {
+    checkWidget();
     return values == null ? null : values.clone();
   }
 
   public void setValues( float... values ) {
+    checkWidget();
     if( !Arrays.equals( this.values, values ) ) {
       this.values = values.clone();
       remoteObject.set( "values", jsonArray( values ) );
@@ -61,12 +65,16 @@ public class ChartItem extends Item {
   }
 
   public Color getColor() {
+    checkWidget();
     return color == null ? getChart().getDisplay().getSystemColor( SWT.COLOR_BLACK ) : color;
   }
 
   public void setColor( Color color ) {
-    this.color = color;
-    remoteObject.set( "color", ProtocolUtil.getJsonForColor( getColor(), false ) );
+    checkWidget();
+    if( color == null ? this.color != null : !color.equals( this.color ) ) {
+      this.color = color;
+      remoteObject.set( "color", ProtocolUtil.getJsonForColor( getColor(), false ) );
+    }
   }
 
   @Override

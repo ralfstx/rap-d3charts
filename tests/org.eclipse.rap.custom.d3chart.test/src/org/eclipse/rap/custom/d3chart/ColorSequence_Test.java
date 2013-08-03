@@ -85,6 +85,14 @@ public class ColorSequence_Test {
     assertEquals( new Color( display, rgb1 ), stream.next() );
   }
 
+  @Test( expected = IllegalStateException.class )
+  public void loop_checksDisposed() {
+    ColorSequence sequence = new ColorSequence( display, rgb1, rgb2 );
+    sequence.dispose();
+
+    sequence.loop();
+  }
+
   @Test
   public void keepsSafeCopyOfColorsArray() {
     RGB[] colors = { rgb1, rgb2, rgb3 };
@@ -105,11 +113,42 @@ public class ColorSequence_Test {
     assertEquals( 3, size );
   }
 
+  @Test( expected = IllegalStateException.class )
+  public void size_checksDisposed() {
+    ColorSequence sequence = new ColorSequence( display, rgb1, rgb2, rgb3 );
+    sequence.dispose();
+
+    sequence.size();
+  }
+
   @Test( expected = IndexOutOfBoundsException.class )
   public void get_failsWithNegativeIndex() {
     ColorSequence sequence = new ColorSequence( display, rgb1 );
 
     sequence.get( -1 );
+  }
+
+  @Test( expected = IllegalStateException.class )
+  public void get_checksDispose() {
+    ColorSequence sequence = new ColorSequence( display, rgb1 );
+    sequence.dispose();
+
+    sequence.get( 0 );
+  }
+
+  @Test
+  public void isDispose_falseByDefault() {
+    ColorSequence sequence = new ColorSequence( display, rgb1 );
+
+    assertFalse( sequence.isDisposed() );
+  }
+
+  @Test
+  public void isDispose_trueAfterDispose() {
+    ColorSequence sequence = new ColorSequence( display, rgb1 );
+    sequence.dispose();
+
+    assertTrue( sequence.isDisposed() );
   }
 
   @Test

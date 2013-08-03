@@ -15,12 +15,15 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.After;
@@ -57,7 +60,7 @@ public class BarChart_Test {
   }
 
   @Test
-  public void testBarWidth_defaultValue() {
+  public void testGetBarWidth_hasDefault() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     int result = barChart.getBarWidth();
@@ -65,8 +68,16 @@ public class BarChart_Test {
     assertEquals( 25, result );
   }
 
+  @Test( expected = SWTException.class )
+  public void testGetBarWidth_checksWidget() {
+    BarChart barChart = new BarChart( shell, SWT.NONE );
+    barChart.dispose();
+
+    barChart.getBarWidth();
+  }
+
   @Test
-  public void testBarWidth_changeValue() {
+  public void testSetBarWidth_changesValue() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setBarWidth( 42 );
@@ -74,8 +85,16 @@ public class BarChart_Test {
     assertEquals( 42, barChart.getBarWidth() );
   }
 
+  @Test( expected = SWTException.class )
+  public void testSetBarWidth_checksWidget() {
+    BarChart barChart = new BarChart( shell, SWT.NONE );
+    barChart.dispose();
+
+    barChart.setBarWidth( 42 );
+  }
+
   @Test
-  public void testBarWidth_isRendered() {
+  public void testSetBarWidth_isRendered() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setBarWidth( 42 );
@@ -84,7 +103,7 @@ public class BarChart_Test {
   }
 
   @Test
-  public void testBarWidth_notRenderedIfUnchanged() {
+  public void testSetBarWidth_notRenderedIfUnchanged() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setBarWidth( barChart.getBarWidth() );
@@ -93,7 +112,7 @@ public class BarChart_Test {
   }
 
   @Test
-  public void testSpacing_defaultValue() {
+  public void testGetSpacing_hasDefault() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     int result = barChart.getSpacing();
@@ -101,8 +120,16 @@ public class BarChart_Test {
     assertEquals( 2, result );
   }
 
+  @Test( expected = SWTException.class )
+  public void testGetSpacing_checksWidget() {
+    BarChart barChart = spy( new BarChart( shell, SWT.NONE ) );
+    barChart.dispose();
+
+    barChart.getSpacing();
+  }
+
   @Test
-  public void testSpacing_changeValue() {
+  public void testSetSpacing_changesValue() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setSpacing( 23 );
@@ -110,8 +137,16 @@ public class BarChart_Test {
     assertEquals( 23, barChart.getSpacing() );
   }
 
+  @Test( expected = SWTException.class )
+  public void testSetSpacing_checksWidget() {
+    BarChart barChart = new BarChart( shell, SWT.NONE );
+    barChart.dispose();
+
+    barChart.setSpacing( 2 );
+  }
+
   @Test
-  public void testSpacing_isRendered() {
+  public void testSetSpacing_isRendered() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setSpacing( 23 );
@@ -120,7 +155,7 @@ public class BarChart_Test {
   }
 
   @Test
-  public void testSpacing_notRenderedIfUnchanged() {
+  public void testSetSpacing_notRenderedIfUnchanged() {
     BarChart barChart = new BarChart( shell, SWT.NONE );
 
     barChart.setSpacing( barChart.getSpacing() );

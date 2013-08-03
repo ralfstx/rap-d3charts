@@ -26,10 +26,12 @@ public class PieChart extends Chart {
   }
 
   public float getStartAngle() {
+    checkWidget();
     return startAngle;
   }
 
   public void setStartAngle( float angle ) {
+    checkWidget();
     if( angle != startAngle ) {
       startAngle = angle;
       remoteObject.set( "startAngle", angle * Math.PI * 2 );
@@ -37,10 +39,12 @@ public class PieChart extends Chart {
   }
 
   public float getEndAngle() {
+    checkWidget();
     return endAngle;
   }
 
   public void setEndAngle( float angle ) {
+    checkWidget();
     if( angle != endAngle ) {
       endAngle = angle;
       remoteObject.set( "endAngle", angle * Math.PI * 2 );
@@ -48,10 +52,12 @@ public class PieChart extends Chart {
   }
 
   public float getInnerRadius() {
+    checkWidget();
     return innerRadius;
   }
 
   public void setInnerRadius( float radius ) {
+    checkWidget();
     if( radius != innerRadius ) {
       innerRadius = radius;
       remoteObject.set( "innerRadius", radius );

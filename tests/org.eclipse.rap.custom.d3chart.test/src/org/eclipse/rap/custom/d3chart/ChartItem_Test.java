@@ -32,6 +32,7 @@ import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -108,7 +109,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void value_defaultsToZero() {
+  public void getValue_defaultsToZero() {
     ChartItem chartItem = new ChartItem( chart );
 
     double result = chartItem.getValue();
@@ -116,8 +117,16 @@ public class ChartItem_Test {
     assertEquals( 0, result, 0 );
   }
 
+  @Test( expected = SWTException.class )
+  public void getValue_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.getValue();
+  }
+
   @Test
-  public void value_canBeChanged() {
+  public void setValue_changesValue() {
     ChartItem chartItem = new ChartItem( chart );
 
     chartItem.setValue( 3.14f );
@@ -125,8 +134,16 @@ public class ChartItem_Test {
     assertEquals( 3.14f, chartItem.getValue(), 0 );
   }
 
+  @Test( expected = SWTException.class )
+  public void setValue_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.setValue( 3.14f );
+  }
+
   @Test
-  public void value_isTransferredToRemote() {
+  public void setValue_isRendered() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
 
@@ -136,7 +153,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void value_isNotTransferredIfUnchanged() {
+  public void setValue_isNotRenderedIfUnchanged() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
     ChartItem chartItem = new ChartItem( chart );
@@ -149,7 +166,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void values_defaultsToNull() {
+  public void getValues_defaultsToNull() {
     ChartItem chartItem = new ChartItem( chart );
 
     float[] values = chartItem.getValues();
@@ -157,8 +174,16 @@ public class ChartItem_Test {
     assertNull( values );
   }
 
+  @Test( expected = SWTException.class )
+  public void getValues_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.getValues();
+  }
+
   @Test
-  public void values_canBeChanged() {
+  public void setValues_changesValues() {
     ChartItem chartItem = new ChartItem( chart );
 
     chartItem.setValues( 3.14f, 1.41f );
@@ -167,7 +192,25 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void values_isTransferredToRemote() {
+  public void setValues_doesNotChangeValue() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.setValue( 3.14f );
+
+    chartItem.setValues( 1.41f );
+
+    assertEquals( 3.14f, chartItem.getValue(), 0 );
+  }
+
+  @Test( expected = SWTException.class )
+  public void setValues_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.setValues( 3.14f, 1.41f );
+  }
+
+  @Test
+  public void setValues_isRendered() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
 
@@ -177,7 +220,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void values_isNotTransferredIfUnchanged() {
+  public void setValues_isNotRenderedIfUnchanged() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
     ChartItem chartItem = new ChartItem( chart );
@@ -190,7 +233,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void color_defaultsToBlack() {
+  public void getColor_defaultsToBlack() {
     ChartItem chartItem = new ChartItem( chart );
 
     Color result = chartItem.getColor();
@@ -198,8 +241,16 @@ public class ChartItem_Test {
     assertEquals( new Color( display, 0, 0, 0 ), result );
   }
 
+  @Test( expected = SWTException.class )
+  public void getColor_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.getColor();
+  }
+
   @Test
-  public void color_canBeChanged() {
+  public void setColor_changesColor() {
     ChartItem chartItem = new ChartItem( chart );
 
     chartItem.setColor( new Color( display, 255, 128, 0 ) );
@@ -207,8 +258,16 @@ public class ChartItem_Test {
     assertEquals( new Color( display, 255, 128, 0 ), chartItem.getColor() );
   }
 
+  @Test( expected = SWTException.class )
+  public void setColor_checksWidget() {
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.dispose();
+
+    chartItem.setColor( null );
+  }
+
   @Test
-  public void color_canBeReset() {
+  public void setColor_resetsColorWithNull() {
     ChartItem chartItem = new ChartItem( chart );
     chartItem.setColor( new Color( display, 255, 128, 0 ) );
 
@@ -218,7 +277,7 @@ public class ChartItem_Test {
   }
 
   @Test
-  public void color_isTransferredToRemote() {
+  public void setColor_isRendered() {
     RemoteObject remoteObject = mock( RemoteObject.class );
     fakeConnection( remoteObject );
 
@@ -226,6 +285,19 @@ public class ChartItem_Test {
 
     JsonValue expected = ProtocolUtil.getJsonForColor( new Color( display, 255, 128, 0 ), false );
     verify( remoteObject ).set( eq( "color" ), eq( expected ) );
+  }
+
+  @Test
+  public void setColor_isNotRenderedIfUnchanged() {
+    RemoteObject remoteObject = mock( RemoteObject.class );
+    fakeConnection( remoteObject );
+    ChartItem chartItem = new ChartItem( chart );
+    chartItem.setColor( new Color( display, 255, 128, 0 ) );
+    reset( remoteObject );
+
+    chartItem.setColor( new Color( display, 255, 128, 0 ) );
+
+    verifyZeroInteractions( remoteObject );
   }
 
   private static Connection fakeConnection( RemoteObject remoteObject ) {

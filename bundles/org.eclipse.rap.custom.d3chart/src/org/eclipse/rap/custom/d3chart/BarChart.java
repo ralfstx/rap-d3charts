@@ -25,10 +25,12 @@ public class BarChart extends Chart {
   }
 
   public int getBarWidth() {
+    checkWidget();
     return barWidth;
   }
 
   public void setBarWidth( int width ) {
+    checkWidget();
     if( width != barWidth ) {
       barWidth = width;
       remoteObject.set( "barWidth", width );
@@ -36,10 +38,12 @@ public class BarChart extends Chart {
   }
 
   public int getSpacing() {
+    checkWidget();
     return spacing;
   }
 
   public void setSpacing( int width ) {
+    checkWidget();
     if( width != spacing ) {
       spacing = width;
       remoteObject.set( "spacing", width );

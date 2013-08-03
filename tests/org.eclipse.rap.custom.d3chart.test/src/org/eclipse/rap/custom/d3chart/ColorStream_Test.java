@@ -41,6 +41,14 @@ public class ColorStream_Test {
     new ColorStream( null );
   }
 
+  @Test( expected = IllegalStateException.class )
+  public void creationFailsWithDisposedSequence() {
+    ColorSequence sequence = new ColorSequence( display, new RGB( 1,  2,  3 ) );
+    sequence.dispose();
+
+    new ColorStream( sequence );
+  }
+
   @Test
   public void next_loopsWithSingleColor() {
     ColorStream stream = new ColorStream( new ColorSequence( display, new RGB( 0, 0, 1 ) ) );
@@ -57,6 +65,16 @@ public class ColorStream_Test {
     assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
     assertEquals( new Color( display, 0, 0, 2 ), stream.next() );
     assertEquals( new Color( display, 0, 0, 1 ), stream.next() );
+  }
+
+  @Test( expected = IllegalStateException.class )
+  public void next_checksDisposed() {
+    ColorSequence sequence = new ColorSequence( display, new RGB( 1,  2,  3 ) );
+    ColorStream colorStream = new ColorStream( sequence );
+
+    sequence.dispose();
+
+    colorStream.next();
   }
 
 }

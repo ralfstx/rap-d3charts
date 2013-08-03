@@ -53,6 +53,7 @@ public abstract class Chart extends Canvas {
   }
 
   public ChartItem[] getItems() {
+    checkWidget();
     return items.toArray( new ChartItem[ 0 ] );
   }
 

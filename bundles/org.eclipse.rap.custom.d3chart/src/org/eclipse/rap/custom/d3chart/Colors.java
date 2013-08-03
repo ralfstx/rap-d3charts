@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.custom.d3chart;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
 
@@ -53,10 +54,16 @@ public abstract class Colors {
   };
 
   public static ColorSequence cat10Colors( Device device ) {
+    if( device.isDisposed() ) {
+      SWT.error( SWT.ERROR_DEVICE_DISPOSED );
+    }
     return new ColorSequence( device, CAT10_COLORS );
   }
 
   public static ColorSequence cat20Colors( Device device ) {
+    if( device.isDisposed() ) {
+      SWT.error( SWT.ERROR_DEVICE_DISPOSED );
+    }
     return new ColorSequence( device, CAT20_COLORS );
   }
 
