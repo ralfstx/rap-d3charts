@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chart Tests</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <script type="text/javascript" src="/lib/d3/v3/d3.v3.min.js"></script>
+  <script type="text/javascript" src="/lib/jasmine/1.2.0/jasmine.js"></script>
+  <script type="text/javascript" src="/lib/jasmine/1.2.0/jasmine-html.js"></script>
+  <link rel="stylesheet" type="text/css" href="/lib/jasmine/1.2.0/jasmine.css">
+
+  <script type="text/javascript" src="chart/rap-mock.js"></script>
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="../../../bundles/org.eclipse.rap.addons.d3chart/js/chart/chart.js"></script>
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="chart/chart-spec.js"></script>
+
+  <script type="text/javascript">
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+      var htmlReporter = new jasmine.HtmlReporter();
+      jasmineEnv.addReporter(htmlReporter);
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+      window.onload = function() {
+        jasmineEnv.execute();
+      };
+    })();
+  </script>
+
+</head>
+<body>
+</body>
+</html>

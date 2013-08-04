@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: D3 Charts for RAP
+Bundle-SymbolicName: org.eclipse.rap.addons.d3chart
+Bundle-Version: 0.0.1.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="2.0.0"
+Export-Package: org.eclipse.rap.addons.d3chart;version="0.0.1"
+Bundle-Vendor: EclipseSource
