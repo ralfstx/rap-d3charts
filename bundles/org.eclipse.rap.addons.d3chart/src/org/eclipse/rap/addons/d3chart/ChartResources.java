@@ -28,8 +28,12 @@ public class ChartResources {
     "chart/item-list.js",
     "chart/chart-item.js",
     "chart/bar-chart.js",
+    "chart/gantt-chart.js",
     "chart/stream-chart.js",
     "chart/pie-chart.js"
+  };
+  private static final String[] CHART_CSS_RESOURCES = new String[] {
+	    "chart/gantt.css"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
     @Override
@@ -50,6 +54,9 @@ public class ChartResources {
       chartLocation = register( resourceManager,
                                 "d3chart/d3chart.js",
                                 concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );
+      register( resourceManager,
+              "d3chart/d3chart.css",
+              concatResources( RESOURCE_LOADER, CHART_CSS_RESOURCES ) );
     } catch( IOException exception ) {
       throw new RuntimeException( "Failed to register resource", exception );
     }

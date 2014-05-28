@@ -1,0 +1,35 @@
+.chart {
+	font-family: Arial, sans-serif;
+	font-size: 10px;
+}
+
+.yAxis path,.yAxis line,.xAxis path {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+.xAxis line {
+	fill: none;
+	stroke: #CCC;
+	shape-rendering: crispEdges;
+}
+.gantt-chart-label {
+	font-family: verdana, 'lucida sans', arial, helvetica, sans-serif; 
+	font-size: 11px;
+	font-weight: normal; 
+	font-style: normal; 
+}
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  height: 16px;                 
+  padding-top: 2px;            
+  padding-bottom: 2px;            
+  padding-left: 6px;            
+  padding-right: 6px;            
+  font: 12px sans-serif;        
+  background: rgb(236, 236, 236);  
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}

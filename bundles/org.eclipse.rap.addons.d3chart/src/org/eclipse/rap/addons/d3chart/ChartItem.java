@@ -53,7 +53,9 @@ public class ChartItem extends Item {
 
   public float[] getValues() {
     checkWidget();
-    return values == null ? null : values.clone();
+    return values == null
+                          ? null
+                          : values.clone();
   }
 
   public void setValues( float... values ) {
@@ -66,14 +68,18 @@ public class ChartItem extends Item {
 
   public Color getColor() {
     checkWidget();
-    return color == null ? getChart().getDisplay().getSystemColor( SWT.COLOR_BLACK ) : color;
+    return color == null
+                         ? getChart().getDisplay().getSystemColor( SWT.COLOR_BLACK )
+                         : color;
   }
 
   public void setColor( Color color ) {
     checkWidget();
-    if( color == null ? this.color != null : !color.equals( this.color ) ) {
+    if( color == null
+                      ? this.color != null
+                      : !color.equals( this.color ) )
+    {
       this.color = color;
-
       remoteObject.set( "color", JsonMapping.toJson( getColor(), 255 ) );
     }
   }
@@ -103,5 +109,4 @@ public class ChartItem extends Item {
     }
     return array;
   }
-
 }
