@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,14 @@ import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
+import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Item;
 
 
-@SuppressWarnings( "restriction" )
 public class ChartItem extends Item {
 
   private static final String REMOTE_TYPE = "d3chart.ChartItem";
@@ -73,7 +72,7 @@ public class ChartItem extends Item {
     checkWidget();
     if( color == null ? this.color != null : !color.equals( this.color ) ) {
       this.color = color;
-      remoteObject.set( "color", ProtocolUtil.getJsonForColor( getColor(), false ) );
+      remoteObject.set( "color", JsonMapping.toJson( getColor(), 255 ) );
     }
   }
 

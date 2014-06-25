@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2014 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.rap.addons.d3chart.Chart;
-import org.eclipse.rap.addons.d3chart.ChartItem;
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonValue;
-import org.eclipse.rap.rwt.internal.protocol.ProtocolUtil;
 import org.eclipse.rap.rwt.remote.Connection;
+import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -43,7 +41,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-@SuppressWarnings( "restriction" )
 public class ChartItem_Test {
 
   private Display display;
@@ -151,7 +148,7 @@ public class ChartItem_Test {
 
     new ChartItem( chart ).setValue( 3.14f );
 
-    verify( remoteObject ).set( eq( "value" ), eq( 3.14f ) );
+    verify( remoteObject ).set( eq( "value" ), eq( (double)3.14f ) );
   }
 
   @Test
@@ -285,7 +282,7 @@ public class ChartItem_Test {
 
     new ChartItem( chart ).setColor( new Color( display, 255, 128, 0 ) );
 
-    JsonValue expected = ProtocolUtil.getJsonForColor( new Color( display, 255, 128, 0 ), false );
+    JsonValue expected = JsonMapping.toJson( new Color( display, 255, 128, 0 ) );
     verify( remoteObject ).set( eq( "color" ), eq( expected ) );
   }
 
