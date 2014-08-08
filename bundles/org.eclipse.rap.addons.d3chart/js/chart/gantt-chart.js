@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 d3chart.GanttChart = function( parent ) {
-  // add calendar css
+  // add chart css
   var head = document.getElementsByTagName('head')[0];
   var ref = document.createElement('link');
   ref.setAttribute('rel', 'stylesheet');
@@ -49,12 +49,17 @@ d3chart.GanttChart.prototype = {
 
   addItem: function( item ) {
 	  this._items.add(item);
-      this._chart._scheduleUpdate();
+      this._chart._scheduleUpdate(true);
   },
 
   removeItem: function( item ) {
 	  this._items.remove( item );
-      this._chart._scheduleUpdate();
+      this._chart._scheduleUpdate(true);
+  },
+  
+  setRemoveAllItems: function() {
+	  this._items = new d3chart.ItemList();
+	  this._chart._scheduleUpdate(true);
   },
 
   destroy: function() {
@@ -71,7 +76,7 @@ d3chart.GanttChart.prototype = {
 
   setBarHeight: function(value) {
 	  this._barHeight = value;
-	  this._redraw();
+	  this._chart._scheduleUpdate(true);
   },
   getBarHeight: function() {
 	  return this._barHeight;
@@ -93,7 +98,6 @@ d3chart.GanttChart.prototype = {
 		  var left = Number(that._margin.left)
 		  if (left < Number(v.length)) {
 			  that._margin.left = width;
-			  console.log(v + " " + width);
 		  }
 	  });
   },
@@ -209,7 +213,7 @@ d3chart.GanttChart.prototype = {
 		  if (that._barHeight == -1) {
 			  return that._y.rangeBand();
 		  } else {
-			  return that._y.rangeBand();
+			  return that._barHeight;
 		  }
 	  })
 	  .attr("width", function(d) { 
@@ -222,8 +226,16 @@ d3chart.GanttChart.prototype = {
             div.transition()        
                 .duration(200)      
                 .style("opacity", .9);      
-            div.html(d.taskText + "asgasfgadf")  
-                .style("left", (that._x(d.startDate) + (that._x(d.endDate)-that._x(d.startDate))/2) + "px")     
+            div.html(d.taskText)
+            	.style("position", "absolute")
+                .style("left", function() {
+                	var startx = that._x(d.startDate);
+                	if (startx + this.offsetWidth > that._width) {
+                		startx -= (startx + this.offsetWidth) - that._width;
+                		if (startx < 0) startx = 0;
+                	}
+                	return startx + "px";
+                }) //function zur Berechnung einfügen
                 .style("top", (that._y(d.taskType) + 10) + "px");    
       })                  
       .on("mouseout", function(d) {       
@@ -307,7 +319,7 @@ rap.registerTypeHandler( "d3chart.GanttChart", {
     return new d3chart.GanttChart( parent );
   },
   destructor: "destroy",
-  properties: ["timeRange", "barHeight", "margin", "taskTypes"], // [ "barWidth", "spacing" ],
+  properties: ["timeRange", "barHeight", "margin", "taskTypes", "removeAllItems"], // [ "barWidth", "spacing" ],
   events: ["Selection"]
 
 } );

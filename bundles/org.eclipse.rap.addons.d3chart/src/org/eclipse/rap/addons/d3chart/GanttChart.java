@@ -77,6 +77,10 @@ public class GanttChart extends Chart {
 	return json;
   }
   
+  public void removeAllItems() {
+	  remoteObject.set("removeAllItems", new JsonArray());
+  }
+  
   public void setTimeRange(long from, long to) {
 	checkWidget();
 	if(chartFrom != from || chartTo != to) {
