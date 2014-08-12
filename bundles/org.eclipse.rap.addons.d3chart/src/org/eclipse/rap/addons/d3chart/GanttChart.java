@@ -78,7 +78,7 @@ public class GanttChart extends Chart {
   }
   
   public void removeAllItems() {
-	  remoteObject.set("removeAllItems", new JsonArray());
+	  remoteObject.call("removeAllItems", new JsonObject());
   }
   
   public void setTimeRange(long from, long to) {
@@ -92,5 +92,4 @@ public class GanttChart extends Chart {
 	  remoteObject.set( "timeRange", json );
 	}
   }
-
 }

@@ -57,7 +57,7 @@ d3chart.GanttChart.prototype = {
       this._chart._scheduleUpdate(true);
   },
   
-  setRemoveAllItems: function() {
+  removeAllItems: function() {
 	  this._items = new d3chart.ItemList();
 	  this._chart._scheduleUpdate(true);
   },
@@ -134,7 +134,7 @@ d3chart.GanttChart.prototype = {
   
   //************************
   _keyFunction: function(d) {
-	  return d.startDate + d.taskType + d.endDate;
+	  return d.startDate + "" + d.taskType + "" + d.endDate + "" + d.color;
   },
 
   _rectTransform: function(d, that) {
@@ -264,7 +264,7 @@ d3chart.GanttChart.prototype = {
 	  var svg = d3.select("svg");
 
 	  var ganttChartGroup = svg.select(".gantt-chart");
-	  var rect = ganttChartGroup.selectAll("rect").data(tasks, that._keyFunction)
+	  var rect = ganttChartGroup.selectAll("rect").data(tasks, this._keyFunction);
 
 	  rect.enter()
 	  .insert("rect",":first-child")
@@ -319,7 +319,8 @@ rap.registerTypeHandler( "d3chart.GanttChart", {
     return new d3chart.GanttChart( parent );
   },
   destructor: "destroy",
-  properties: ["timeRange", "barHeight", "margin", "taskTypes", "removeAllItems"], // [ "barWidth", "spacing" ],
-  events: ["Selection"]
+  properties: ["timeRange", "barHeight", "margin", "taskTypes" ], // [ "barWidth", "spacing" ],
+  events: ["Selection"],
+  methods : [ 'removeAllItems' ]
 
 } );
