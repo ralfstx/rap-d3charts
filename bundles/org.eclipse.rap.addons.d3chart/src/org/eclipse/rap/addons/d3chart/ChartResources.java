@@ -4,9 +4,9 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
- *    Ralf Sternberg - initial API and implementation
+ * Ralf Sternberg - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart;
 
@@ -33,36 +33,38 @@ public class ChartResources {
     "chart/pie-chart.js"
   };
   private static final String[] CHART_CSS_RESOURCES = new String[] {
-	    "chart/gantt.css"
+    "chart/gantt.css"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
+
     @Override
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return ChartResources.class.getClassLoader().getResourceAsStream( resourceName );
     }
   };
+  static String d3Location;
+  static String chartLocation;
 
   static void ensureJavaScriptResources() {
-    String d3Location = null;
-    String chartLocation = null;
     ResourceManager resourceManager = RWT.getApplicationContext().getResourceManager();
-    try {
-      // TODO register resources only once
-      d3Location = register( resourceManager,
-                             "lib/d3.v3.min.js",
-                             RESOURCE_LOADER.getResourceAsStream( "resources/d3.v3.min.js" ) );
-      chartLocation = register( resourceManager,
-                                "d3chart/d3chart.js",
-                                concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );
-      register( resourceManager,
-              "d3chart/d3chart.css",
-              concatResources( RESOURCE_LOADER, CHART_CSS_RESOURCES ) );
-    } catch( IOException exception ) {
-      throw new RuntimeException( "Failed to register resource", exception );
+    if( !resourceManager.isRegistered( "lib/d3.v3.min.js" ) ) {
+      try {
+        d3Location = register( resourceManager,
+                               "lib/d3.v3.min.js",
+                               RESOURCE_LOADER.getResourceAsStream( "resources/d3.v3.min.js" ) );
+        chartLocation = register( resourceManager,
+                                  "d3chart/d3chart.js",
+                                  concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );
+        register( resourceManager,
+                  "d3chart/d3chart.css",
+                  concatResources( RESOURCE_LOADER, CHART_CSS_RESOURCES ) );
+      } catch( IOException exception ) {
+        throw new RuntimeException( "Failed to register resource", exception );
+      }
     }
     JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
     loader.require( d3Location );
-    loader.require( chartLocation + "?nocache=" + System.currentTimeMillis() );
+    loader.require( chartLocation );
   }
 
   private static String register( ResourceManager resourceManager,
@@ -82,11 +84,10 @@ public class ChartResources {
   private static InputStream concatResources( ResourceLoader loader, String... resourceNames )
     throws IOException
   {
-    Vector<InputStream> inputStreams = new Vector<>( resourceNames.length );
+    Vector<InputStream> inputStreams = new Vector<InputStream>( resourceNames.length );
     for( String resourceName : resourceNames ) {
       inputStreams.add( loader.getResourceAsStream( resourceName ) );
     }
     return new SequenceInputStream( inputStreams.elements() );
   }
-
 }

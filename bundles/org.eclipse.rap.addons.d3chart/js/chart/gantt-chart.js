@@ -138,7 +138,7 @@ d3chart.GanttChart.prototype = {
   },
 
   _rectTransform: function(d, that) {
-	  return "translate(" + that._x(d.startDate) + "," + that._y(d.taskType) + ")";
+	  return "translate(" + that._x(d.startDate) + "," + (that._y(d.taskType) + that._y.rangeBand()/2 - that._barHeight/2) + ")";
   },
 
   _initTimeDomain: function() {
@@ -183,11 +183,12 @@ d3chart.GanttChart.prototype = {
 	  //.append("g")
 	  	  
 	  //create tooltip if necessary
-	  if (d3.select(".tooltip").empty){
-		  var div = d3.select(this._chart._element).append("div")   
+	  var div = d3.select(".tooltip"); 
+	  if (div.empty()){
+		  div = d3.select(this._chart._element).append("div")   
 		    		.attr("class", "tooltip")               
 		    		.style("opacity", 0);
-	  }
+	  } 
 	  //remove all childnodes
 	  d3.selectAll("rect").remove();
 	  d3.selectAll("g.xAxis").remove();
@@ -217,7 +218,11 @@ d3chart.GanttChart.prototype = {
 		  }
 	  })
 	  .attr("width", function(d) { 
-		  return (that._x(d.endDate) - that._x(d.startDate)); 
+	      var retValue = (that._x(d.endDate) - that._x(d.startDate));
+	      if(retValue < 1) {
+	      	retValue = 1;
+	      }
+		  return retValue; 
 	  })
 	  .attr("fill", function(d){
 		  return d.color;
@@ -235,8 +240,8 @@ d3chart.GanttChart.prototype = {
                 		if (startx < 0) startx = 0;
                 	}
                 	return startx + "px";
-                }) //function zur Berechnung einfügen
-                .style("top", (that._y(d.taskType) + 10) + "px");    
+                })  
+                .style("top", (that._y(d.taskType) + that._y.rangeBand()/2 + that._barHeight/2) + "px");    
       })                  
       .on("mouseout", function(d) {       
             div.transition()        
