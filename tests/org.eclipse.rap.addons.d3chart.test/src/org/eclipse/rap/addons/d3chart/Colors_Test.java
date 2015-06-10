@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
 package org.eclipse.rap.addons.d3chart;
 
 import org.eclipse.rap.addons.d3chart.Colors;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -24,15 +24,12 @@ public class Colors_Test {
 
   private Device display;
 
+  @Rule
+  public TestContext context = new TestContext();
+
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test( expected = SWTException.class )

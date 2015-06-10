@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ import static org.junit.Assert.*;
 
 import org.eclipse.rap.addons.d3chart.ColorSequence;
 import org.eclipse.rap.addons.d3chart.ColorStream;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -30,15 +30,12 @@ public class ColorSequence_Test {
   private final RGB rgb2 = new RGB( 0, 0, 2 );
   private final RGB rgb3 = new RGB( 0, 0, 3 );
 
+  @Rule
+  public TestContext context = new TestContext();
+
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test( expected = NullPointerException.class )

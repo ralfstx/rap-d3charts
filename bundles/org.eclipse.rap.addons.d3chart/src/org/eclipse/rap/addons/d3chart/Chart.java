@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,12 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 
-@SuppressWarnings( "restriction" )
 public abstract class Chart extends Canvas {
 
   private final List<ChartItem> items;
@@ -35,7 +33,7 @@ public abstract class Chart extends Canvas {
 
   public Chart( Composite parent, int style, String remoteType ) {
     super( parent, style );
-    items = new LinkedList<ChartItem>();
+    items = new LinkedList<>();
     remoteObject = RWT.getUISession().getConnection().createRemoteObject( remoteType );
     remoteObject.set( "parent", getId( this ) );
     remoteObject.setHandler( new AbstractOperationHandler() {
@@ -76,16 +74,9 @@ public abstract class Chart extends Canvas {
   public void removeListener( int eventType, Listener listener ) {
     boolean wasListening = isListening( SWT.Selection );
     super.removeListener( eventType, listener );
-    if( eventType == SWT.Selection && wasListening ) {
-      if( !isListening( SWT.Selection ) ) {
-        remoteObject.listen( "Selection", false );
-      }
+    if( eventType == SWT.Selection && wasListening && !isListening( SWT.Selection ) ) {
+      remoteObject.listen( "Selection", false );
     }
-  }
-
-  @Override
-  protected void removeListener( int eventType, SWTEventListener listener ) {
-    super.removeListener( eventType, listener );
   }
 
   void addItem( ChartItem item ) {

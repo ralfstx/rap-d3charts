@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.util.Arrays;
 
 import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.WidgetAdapter;
 import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.swt.SWT;
@@ -26,12 +25,14 @@ public class ChartItem extends Item {
 
   private static final String REMOTE_TYPE = "d3chart.ChartItem";
   private final RemoteObject remoteObject;
+  private final Chart chart;
   private float value;
   private float[] values;
   private Color color;
 
   public ChartItem( Chart chart ) {
     super( chart, SWT.NONE );
+    this.chart = chart;
     chart.addItem( this );
     remoteObject = RWT.getUISession().getConnection().createRemoteObject( REMOTE_TYPE );
     remoteObject.set( "parent", chart.getRemoteId() );
@@ -72,6 +73,7 @@ public class ChartItem extends Item {
     checkWidget();
     if( color == null ? this.color != null : !color.equals( this.color ) ) {
       this.color = color;
+
       remoteObject.set( "color", JsonMapping.toJson( getColor(), 255 ) );
     }
   }
@@ -90,14 +92,14 @@ public class ChartItem extends Item {
   }
 
   private Chart getChart() {
-    return ( Chart )getAdapter( WidgetAdapter.class ).getParent();
+    return chart;
   }
 
   private static JsonArray jsonArray( float[] values ) {
     // TODO use array.addAll in future versions
     JsonArray array = new JsonArray();
-    for( int i = 0; i < values.length; i++ ) {
-      array.add( values[ i ] );
+    for( float value : values ) {
+      array.add( value );
     }
     return array;
   }

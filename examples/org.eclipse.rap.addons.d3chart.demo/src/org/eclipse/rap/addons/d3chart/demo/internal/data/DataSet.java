@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,8 @@ import java.util.List;
 
 public class DataSet {
 
+  private final List<DataItem> rows = new ArrayList<>();
   private List<String> columns;
-  private final List<DataItem> rows = new ArrayList<DataItem>();
 
   public DataSet( String resourceName ) throws IOException {
     InputStream inputStream = DataSet.class.getClassLoader().getResourceAsStream( resourceName );
@@ -83,7 +83,7 @@ public class DataSet {
   }
 
   private void readColumns( String[] elements ) {
-    columns = new ArrayList<String>( elements.length - 1 );
+    columns = new ArrayList<>( elements.length - 1 );
     for( int i = 0; i < elements.length - 1; i++ ) {
       columns.add( stripQuotes( elements[ i + 1 ] ) );
     }

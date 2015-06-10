@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class PieChartExample implements IExamplePage {
   private Table table;
   private Label yearLabel;
 
+  @Override
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
     dataSet = ExampleData.BROWSER_YEARLY;
@@ -66,29 +67,34 @@ public class PieChartExample implements IExamplePage {
     layoutData.horizontalSpan = 2;
     pieChart.setLayoutData( layoutData );
     pieChart.addListener( SWT.Selection, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         table.select( event.index );
         table.showSelection();
       }
     } );
     createButton( composite, "180°", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pieChart.setStartAngle( -0.25f );
         pieChart.setEndAngle( 0.25f );
       }
     } ).setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, true, false ) );
     createButton( composite, "360°", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pieChart.setStartAngle( 0f );
         pieChart.setEndAngle( 1f );
       }
     } ).setLayoutData( new GridData( SWT.RIGHT, SWT.CENTER, true, false ) );
     createButton( composite, "donut", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pieChart.setInnerRadius( 0.6f );
       }
     } ).setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, true, false ) );
     createButton( composite, "pie", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         pieChart.setInnerRadius( 0f );
       }
@@ -101,6 +107,7 @@ public class PieChartExample implements IExamplePage {
     composite.setLayout( ExampleUtil.createGridLayout( 3, true, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
     createButton( composite, "Prev", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         showPrevious();
       }
@@ -109,6 +116,7 @@ public class PieChartExample implements IExamplePage {
     yearLabel.setFont( new Font( parent.getDisplay(), "sans-serif", 24, SWT.NORMAL ) );
     yearLabel.setLayoutData( new GridData( SWT.CENTER, SWT.CENTER, true, false ) );
     createButton( composite, "Next", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         showNext();
       }
@@ -131,13 +139,6 @@ public class PieChartExample implements IExamplePage {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setText( "Market share" );
     column2.setWidth( 120 );
-  }
-
-  private Button createButton( Composite parent, String text, Listener listener ) {
-    Button button = new Button( parent, SWT.PUSH );
-    button.setText( text );
-    button.addListener( SWT.Selection, listener );
-    return button;
   }
 
   private void createItems() {
@@ -180,11 +181,18 @@ public class PieChartExample implements IExamplePage {
     }
   }
 
-  private void updateItems( ChartItem chartItem, TableItem tableItem, float value ) {
+  private static void updateItems( ChartItem chartItem, TableItem tableItem, float value ) {
     String text = new DecimalFormat( "#.#" ).format( value ) + "%";
     chartItem.setValue( value );
     chartItem.setText( value > 5 ? text : "" );
     tableItem.setText( 2, text );
+  }
+
+  private static Button createButton( Composite parent, String text, Listener listener ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( text );
+    button.addListener( SWT.Selection, listener );
+    return button;
   }
 
 }

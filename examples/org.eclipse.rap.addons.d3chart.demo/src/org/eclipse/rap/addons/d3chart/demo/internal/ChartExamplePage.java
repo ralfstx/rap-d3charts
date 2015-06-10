@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,9 @@ public class ChartExamplePage implements IExamplePage {
 
   private Composite tabBar;
   private Composite mainArea;
-  private final List<IExamplePage> subPages = new ArrayList<IExamplePage>();
+  private final List<IExamplePage> subPages = new ArrayList<>();
 
+  @Override
   public void createControl( Composite parent ) {
     parent.setLayout( new FillLayout() );
     Composite composite = new Composite( parent, SWT.NONE );
@@ -54,7 +55,7 @@ public class ChartExamplePage implements IExamplePage {
     }
   }
 
-  private boolean isSupportedBrowser() {
+  private static boolean isSupportedBrowser() {
     String userAgent = RWT.getRequest().getHeader( "User-Agent" );
     if( userAgent != null ) {
       Pattern pattern = Pattern.compile( ".*MSIE\\s+(\\d+).*" );
@@ -67,7 +68,7 @@ public class ChartExamplePage implements IExamplePage {
     return false;
   }
 
-  private Composite createMainArea( Composite parent ) {
+  private static Composite createMainArea( Composite parent ) {
     Composite area = new Composite( parent, SWT.NONE );
     area.setLayout( new FillLayout() );
     FormData layoutData = new FormData();
@@ -79,7 +80,7 @@ public class ChartExamplePage implements IExamplePage {
     return area;
   }
 
-  private Composite createTabBar( Composite parent ) {
+  private static Composite createTabBar( Composite parent ) {
     Composite bar = new Composite( parent, SWT.NONE );
     RowLayout layout = new RowLayout( SWT.HORIZONTAL );
     layout.marginLeft = 25;
@@ -103,6 +104,7 @@ public class ChartExamplePage implements IExamplePage {
     label.setText( text );
     label.setCursor( label.getDisplay().getSystemCursor( SWT.CURSOR_HAND ) );
     label.addListener( SWT.MouseDown, new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         label.setForeground( new Color( label.getDisplay(), 0x31, 0x61, 0x9C ) );
         for( Control control : label.getParent().getChildren() ) {

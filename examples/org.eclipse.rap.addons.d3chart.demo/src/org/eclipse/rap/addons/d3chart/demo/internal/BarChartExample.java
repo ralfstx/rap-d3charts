@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ public class BarChartExample implements IExamplePage {
   private BarChart barChart;
   private PieChart pieChart;
 
+  @Override
   public void createControl( Composite parent ) {
     colors = Colors.cat10Colors( parent.getDisplay() ).loop();
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
@@ -57,6 +58,7 @@ public class BarChartExample implements IExamplePage {
     composite.setLayout( ExampleUtil.createGridLayout( 2, true, true, false ) );
     composite.setLayoutData( ExampleUtil.createFillData() );
     createButton( composite, "Add item", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         float value = ( float )( Math.random() * 0.8 );
         Color color = colors.next();
@@ -65,32 +67,38 @@ public class BarChartExample implements IExamplePage {
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Remove item", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         removeItem( pieChart );
         removeItem( barChart );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "small bars", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         barChart.setBarWidth( 20 );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "large bars", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         barChart.setBarWidth( 40 );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "spacing", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         barChart.setSpacing( 2 );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "no spacing", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         barChart.setSpacing( 0 );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Resize charts", new Listener() {
+      @Override
       public void handleEvent( Event event ) {
         if( pieChart.getSize().x > 350 ) {
           pieChart.setLayoutData( new GridData( 300, 200 ) );
@@ -111,7 +119,7 @@ public class BarChartExample implements IExamplePage {
     return button;
   }
 
-  private void addItem( Chart chart, float value, Color color ) {
+  private static void addItem( Chart chart, float value, Color color ) {
     ChartItem item = new ChartItem( chart );
     item.setValue( value );
     DecimalFormat format = new DecimalFormat( "#.#" );
@@ -119,7 +127,7 @@ public class BarChartExample implements IExamplePage {
     item.setColor( color );
   }
 
-  private void removeItem( Chart chart ) {
+  private static void removeItem( Chart chart ) {
     ChartItem[] items = chart.getItems();
     if( items.length > 0 ) {
       items[ 0 ].dispose();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class ChartResources {
     "chart/pie-chart.js"
   };
   private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader() {
+    @Override
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return ChartResources.class.getClassLoader().getResourceAsStream( resourceName );
     }
@@ -74,7 +75,7 @@ public class ChartResources {
   private static InputStream concatResources( ResourceLoader loader, String... resourceNames )
     throws IOException
   {
-    Vector<InputStream> inputStreams = new Vector<InputStream>( resourceNames.length );
+    Vector<InputStream> inputStreams = new Vector<>( resourceNames.length );
     for( String resourceName : resourceNames ) {
       inputStreams.add( loader.getResourceAsStream( resourceName ) );
     }

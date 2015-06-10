@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
@@ -30,15 +25,21 @@ import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.rap.rwt.remote.RemoteObject;
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 
 public class ChartItem_Test {
@@ -47,17 +48,14 @@ public class ChartItem_Test {
   private Shell shell;
   private Chart chart;
 
+  @Rule
+  public TestContext context = new TestContext();
+
   @Before
   public void setUp() {
-    Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     chart = new Chart( shell, SWT.NONE, "foo" ) {};
-  }
-
-  @After
-  public void tearDown() {
-    Fixture.tearDown();
   }
 
   @Test
@@ -299,10 +297,10 @@ public class ChartItem_Test {
     verifyZeroInteractions( remoteObject );
   }
 
-  private static Connection fakeConnection( RemoteObject remoteObject ) {
+  private Connection fakeConnection( RemoteObject remoteObject ) {
     Connection connection = mock( Connection.class );
     when( connection.createRemoteObject( anyString() ) ).thenReturn( remoteObject );
-    Fixture.fakeConnection( connection );
+    context.replaceConnection( connection );
     return connection;
   }
 
