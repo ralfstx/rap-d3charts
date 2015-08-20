@@ -285,7 +285,7 @@ d3chart.GanttChart.prototype = {
 		  if (that._barHeight == -1) {
 			  return that._y.rangeBand();
 		  } else {
-			  return that._y.rangeBand();
+			  return that._barHeight;
 		  }
 	  })
 	  .attr("width", function(d) { 
@@ -297,7 +297,13 @@ d3chart.GanttChart.prototype = {
 	  .attr("transform", function(d){
 		  return that._rectTransform(d, that);
 	  })
-	  .attr("height", function(d) { return that._y.rangeBand(); })
+	  .attr("height", function(d) {
+	      if (that._barHeight == -1) {
+			  return that._y.rangeBand();
+		  } else {
+			  return that._barHeight;
+		  }
+	  })
 	  .attr("width", function(d) { 
 		  return (that._x(d.endDate) - that._x(d.startDate)); 
 	  })
