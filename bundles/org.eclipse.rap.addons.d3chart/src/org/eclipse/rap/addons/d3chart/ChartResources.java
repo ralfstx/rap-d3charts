@@ -45,8 +45,8 @@ public class ChartResources {
     try {
       // TODO register resources only once
       d3Location = register( resourceManager,
-                             "lib/d3.v3.min.js",
-                             RESOURCE_LOADER.getResourceAsStream( "resources/d3.v3.min.js" ) );
+                             "lib/d3.min.js",
+                             RESOURCE_LOADER.getResourceAsStream( "resources/d3.min.js" ) );
       chartLocation = register( resourceManager,
                                 "d3chart/d3chart.js",
                                 concatResources( RESOURCE_LOADER, CHART_JS_RESOURCES ) );

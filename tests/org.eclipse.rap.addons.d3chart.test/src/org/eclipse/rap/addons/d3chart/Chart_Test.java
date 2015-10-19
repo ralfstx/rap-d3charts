@@ -67,7 +67,7 @@ public class Chart_Test {
   public void testCreate_registeresJavaScriptResource() {
     new Chart( shell, SWT.BORDER, "foo" ) {};
 
-    assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.v3.min.js" ) );
+    assertTrue( RWT.getResourceManager().isRegistered( "lib/d3.min.js" ) );
     assertTrue( RWT.getResourceManager().isRegistered( "d3chart/d3chart.js" ) );
   }
 
