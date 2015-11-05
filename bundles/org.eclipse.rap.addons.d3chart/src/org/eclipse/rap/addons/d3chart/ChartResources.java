@@ -25,8 +25,6 @@ public class ChartResources {
 
   private static final String[] CHART_JS_RESOURCES = new String[] {
     "chart/chart.js",
-    "chart/item-list.js",
-    "chart/chart-item.js",
     "chart/bar-chart.js",
     "chart/stream-chart.js",
     "chart/pie-chart.js"

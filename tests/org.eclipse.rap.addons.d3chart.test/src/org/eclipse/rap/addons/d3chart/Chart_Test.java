@@ -15,13 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.RemoteObject;
@@ -35,6 +29,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class Chart_Test {
@@ -94,41 +92,22 @@ public class Chart_Test {
     verify( remoteObject ).destroy();
   }
 
-  @Test
-  public void testGetItems_emptyByDefault() {
-    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
-
-    assertEquals( 0, chart.getItems().length );
-  }
-
   @Test( expected = SWTException.class )
-  public void testGetItems_checksWidget() {
+  public void testSetChartData_checksWidget() {
     Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
     chart.dispose();
 
-    chart.getItems();
+    chart.setChartData( new JsonArray() );
   }
 
   @Test
-  public void testAddItem() {
+  public void testSetChartData_isRendered() {
     Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
-    ChartItem item = mock( ChartItem.class );
+    JsonArray data = new JsonArray().add( 23 ).add( 42 );
 
-    chart.addItem( item );
+    chart.setChartData( data );
 
-    assertEquals( 1, chart.getItems().length );
-    assertTrue( Arrays.asList( chart.getItems() ).contains( item ) );
-  }
-
-  @Test
-  public void testRemoveItem() {
-    Chart chart = new Chart( shell, SWT.NONE, "foo" ) {};
-    ChartItem item = mock( ChartItem.class );
-    chart.addItem( item );
-
-    chart.removeItem( item );
-
-    assertEquals( 0, chart.getItems().length );
+    verify( remoteObject ).set( "items", data );
   }
 
   @Test
@@ -147,7 +126,7 @@ public class Chart_Test {
     chart.addListener( SWT.Selection, mock( Listener.class ) );
     chart.addListener( SWT.Selection, mock( Listener.class ) );
 
-    verify( remoteObject, times( 1 ) ).listen( "Selection", true );
+    verify( remoteObject ).listen( "Selection", true );
   }
 
   @Test
@@ -170,7 +149,7 @@ public class Chart_Test {
     chart.removeListener( SWT.Selection, listener );
     chart.removeListener( SWT.Selection, listener );
 
-    verify( remoteObject, times( 1 ) ).listen( "Selection", false );
+    verify( remoteObject ).listen( "Selection", false );
   }
 
   private Connection fakeConnection( RemoteObject remoteObject ) {

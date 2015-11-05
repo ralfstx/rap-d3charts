@@ -12,9 +12,7 @@ package org.eclipse.rap.addons.d3chart;
 
 import static org.eclipse.rap.rwt.widgets.WidgetUtil.getId;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
@@ -28,12 +26,10 @@ import org.eclipse.swt.widgets.Listener;
 
 public abstract class Chart extends Canvas {
 
-  private final List<ChartItem> items;
   protected final RemoteObject remoteObject;
 
   public Chart( Composite parent, int style, String remoteType ) {
     super( parent, style );
-    items = new LinkedList<>();
     remoteObject = RWT.getUISession().getConnection().createRemoteObject( remoteType );
     remoteObject.set( "parent", getId( this ) );
     remoteObject.setHandler( new AbstractOperationHandler() {
@@ -42,7 +38,6 @@ public abstract class Chart extends Canvas {
         if( "Selection".equals( eventName ) ) {
           Event event = new Event();
           event.index = properties.get( "index" ).asInt();
-          event.item = items.get( event.index );
           notifyListeners( SWT.Selection, event );
         }
       }
@@ -50,9 +45,9 @@ public abstract class Chart extends Canvas {
     ChartResources.ensureJavaScriptResources();
   }
 
-  public ChartItem[] getItems() {
+  public void setChartData( JsonArray data ) {
     checkWidget();
-    return items.toArray( new ChartItem[ 0 ] );
+    remoteObject.set( "items", data );
   }
 
   @Override
@@ -77,14 +72,6 @@ public abstract class Chart extends Canvas {
     if( eventType == SWT.Selection && wasListening && !isListening( SWT.Selection ) ) {
       remoteObject.listen( "Selection", false );
     }
-  }
-
-  void addItem( ChartItem item ) {
-    items.add( item );
-  }
-
-  void removeItem( ChartItem item ) {
-    items.remove( item );
   }
 
   String getRemoteId() {

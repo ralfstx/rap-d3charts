@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,22 +16,17 @@ d3chart.PieChart = function( parent ) {
   this._innerRadius = 0;
   this._arc = d3.svg.arc();
   this._layout = d3.layout.pie().sort( null )
-    .value( function( item ) { return item.getValue(); } )
+    .value( function( item ) { return item.value || 0; } )
     .startAngle( this._startAngle )
     .endAngle( this._endAngle );
-  this._items = new d3chart.ItemList();
+  this._items = [];
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.PieChart.prototype = {
 
-  addItem: function( item ) {
-    this._items.add( item );
-    this._chart._scheduleUpdate();
-  },
-
-  removeItem: function( item ) {
-    this._items.remove( item );
+  setItems: function( items ) {
+    this._items = items;
     this._chart._scheduleUpdate();
   },
 
@@ -79,7 +74,7 @@ d3chart.PieChart.prototype = {
 
   render: function() {
     var selection = this._layer.selectAll( "g.segment" )
-      .data( this._layout( this._items ), function( datum ) { return datum.data.id(); } );
+      .data( this._layout( this._items ) );
     this._show( selection );
     this._updateSegments( selection );
     this._createSegments( selection.enter() );
@@ -100,7 +95,7 @@ d3chart.PieChart.prototype = {
   _createPaths: function( selection ) {
     var that = this;
     selection.append( "svg:path" )
-      .attr( "fill", function( item ) { return item.data.getColor(); } )
+      .attr( "fill", function( item ) { return d3chart.getColor( item.data ); } )
       .attr( "d", that._arc )
       .each( function( datum ) {
         this._buffer = { startAngle: datum.startAngle, endAngle: datum.endAngle };
@@ -114,10 +109,10 @@ d3chart.PieChart.prototype = {
       .style( "font-family", "sans-serif" )
       .style( "font-size", "11px" )
       .style( "fill", "white" )
-      .attr( "transform", function( datum ) { return "translate(" + that._arc.centroid( datum ) + ")"; } )
+      .attr( "transform", function( datum ) { return "translate(" + that._arc.centroid( datum ).join( "," ) + ")"; } )
       .attr( "dy", ".35em" )
       .attr( "text-anchor", "middle" )
-      .text( function( item ) { return item.data.getText(); } );
+      .text( function( item ) { return item.data.text || ""; } );
   },
 
   _updateSegments: function( selection ) {
@@ -130,7 +125,7 @@ d3chart.PieChart.prototype = {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "fill", function( item ) { return item.data.getColor(); } )
+      .attr( "fill", function( item ) { return d3chart.getColor( item.data ); } )
       .attrTween( "d", function( datum ) {
         var previous = this._buffer;
         var interpolate = d3.interpolate( previous, datum );
@@ -148,11 +143,11 @@ d3chart.PieChart.prototype = {
       .duration( 500 )
       .attr( "opacity", 0.0 )
       .transition()
-      .duration( 0 )
-      .attr( "transform", function( datum ) { return "translate(" + that._arc.centroid( datum ) + ")"; } )
+      .duration( 100 )
+      .attr( "transform", function( datum ) { return "translate(" + that._arc.centroid( datum ).join( "," ) + ")"; })
       .attr( "dy", ".35em" )
       .attr( "text-anchor", "middle" )
-      .text( function( item ) { return item.data.getText(); } )
+      .text( function( item ) { return item.data.text || ""; } )
       .transition()
       .duration( 500 )
       .attr( "opacity", 1.0 );
@@ -188,7 +183,7 @@ rap.registerTypeHandler( "d3chart.PieChart", {
 
   destructor: "destroy",
 
-  properties: [ "startAngle", "endAngle", "innerRadius" ],
+  properties: [ "startAngle", "endAngle", "innerRadius", "items" ],
 
   events: [ "Selection" ]
 

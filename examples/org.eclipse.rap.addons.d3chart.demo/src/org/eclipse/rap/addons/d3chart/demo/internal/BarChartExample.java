@@ -13,13 +13,14 @@ package org.eclipse.rap.addons.d3chart.demo.internal;
 import java.text.DecimalFormat;
 
 import org.eclipse.rap.addons.d3chart.BarChart;
-import org.eclipse.rap.addons.d3chart.Chart;
-import org.eclipse.rap.addons.d3chart.ChartItem;
 import org.eclipse.rap.addons.d3chart.ColorStream;
 import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.PieChart;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.remote.JsonMapping;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -34,6 +35,7 @@ public class BarChartExample implements IExamplePage {
   private ColorStream colors;
   private BarChart barChart;
   private PieChart pieChart;
+  private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
@@ -62,15 +64,17 @@ public class BarChartExample implements IExamplePage {
       public void handleEvent( Event event ) {
         float value = ( float )( Math.random() * 0.8 );
         Color color = colors.next();
-        addItem( pieChart, value, color );
-        addItem( barChart, value, color );
+        addItem( value, color );
+        pieChart.setChartData( items );
+        barChart.setChartData( items );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "Remove item", new Listener() {
       @Override
       public void handleEvent( Event event ) {
-        removeItem( pieChart );
-        removeItem( barChart );
+        removeItem();
+        pieChart.setChartData( items );
+        barChart.setChartData( items );
       }
     } ).setLayoutData( new GridData( SWT.FILL, SWT.CENTER, false, false ) );
     createButton( composite, "small bars", new Listener() {
@@ -119,19 +123,23 @@ public class BarChartExample implements IExamplePage {
     return button;
   }
 
-  private static void addItem( Chart chart, float value, Color color ) {
-    ChartItem item = new ChartItem( chart );
-    item.setValue( value );
+  private void addItem( float value, Color color ) {
     DecimalFormat format = new DecimalFormat( "#.#" );
-    item.setText( format.format( value * 100 ) + "%" );
-    item.setColor( color );
+    items.add( new JsonObject()
+      .add( "value", value )
+      .add( "text", format.format( value * 100 ) + "%" )
+      .add( "color", JsonMapping.toJson( color ) ) );
   }
 
-  private static void removeItem( Chart chart ) {
-    ChartItem[] items = chart.getItems();
-    if( items.length > 0 ) {
-      items[ 0 ].dispose();
+  private void removeItem() {
+    // TODO Use JsonArray.remove() when JSON API is updated in RAP
+    JsonArray newItems = new JsonArray();
+    for( int i = 0; i < items.size(); i++ ) {
+      if (i != 0) {
+        newItems.add( items.get( i ) );
+      }
     }
+    items = newItems;
   }
 
 }

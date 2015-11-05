@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,19 +13,14 @@ d3chart.StreamChart = function( parent ) {
   this._stack = d3.layout.stack()
     .offset( "wiggle" )
     .values( function( d ) { return d.values; } );
-  this._items = new d3chart.ItemList();
+  this._items = [];
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.StreamChart.prototype = {
 
-  addItem: function( item ) {
-    this._items.add( item );
-    this._chart._scheduleUpdate();
-  },
-
-  removeItem: function( item ) {
-    this._items.remove( item );
+  setItems: function( items ) {
+    this._items = items;
     this._chart._scheduleUpdate();
   },
 
@@ -58,7 +53,7 @@ d3chart.StreamChart.prototype = {
     var data = this._items.map( function( item ) {
       return {
         item: item,
-        values: item.getValues().map( function( value, index ) {
+        values: (item.values || []).map( function( value, index ) {
           return { x: index, y: value };
         } )
       };
@@ -85,14 +80,14 @@ d3chart.StreamChart.prototype = {
     var that = this;
     selection.append( "svg:path" )
       .attr( "d", function( d ) { return that._area( d.values ); } )
-      .style( "fill", function( d ) { return d.item.getColor(); } )
+      .style( "fill", function( d ) { return d3chart.getColor( d.item ); } )
       .append( "svg:title" )
-        .text( function( d ) { return d.item.getText(); } );
+        .text( function( d ) { return d.item.text || ""; } );
   },
 
   _createTexts: function( selection ) {
     selection.append( "svg:text" )
-      .attr( "text", function( d ) { return d.item.getText(); } );
+      .attr( "text", function( d ) { return d.item.text || ""; } );
   },
 
   _updateElements: function( selection ) {
@@ -133,7 +128,7 @@ rap.registerTypeHandler( "d3chart.StreamChart", {
 
   destructor: "destroy",
 
-  properties: [],
+  properties: [ "items" ],
 
   events: [ "Selection" ]
 

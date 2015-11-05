@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 EclipseSource and others.
+ * Copyright (c) 2013, 2015 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,14 @@
 d3chart.BarChart = function( parent ) {
   this._barWidth = 25;
   this._spacing = 2;
-  this._items = new d3chart.ItemList();
+  this._items = [];
   this._chart = new d3chart.Chart( parent, this );
 };
 
 d3chart.BarChart.prototype = {
 
-  addItem: function( item ) {
-    this._items.add( item );
-    this._chart._scheduleUpdate();
-  },
-
-  removeItem: function( item ) {
-    this._items.remove( item );
+  setItems: function( items ) {
+    this._items = items;
     this._chart._scheduleUpdate();
   },
 
@@ -49,8 +44,7 @@ d3chart.BarChart.prototype = {
 
   render: function( chart ) {
     this._xScale = d3.scale.linear().domain( [ 0, 1 ] ).range( [ 0, chart._width - chart._padding * 2 ] );
-    var selection = this._layer.selectAll( "g.item" )
-      .data( this._items, function( item ) { return item.id(); } );
+    var selection = this._layer.selectAll( "g.item" ).data( this._items );
     this._createElements( selection.enter() );
     this._updateElements( selection );
     this._removeElements( selection.exit() );
@@ -73,7 +67,7 @@ d3chart.BarChart.prototype = {
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
       .attr( "width", 0 )
       .attr( "height", that._barWidth )
-      .attr( "fill", function( item ) { return item.getColor(); } );
+      .attr( "fill", function( item ) { return d3chart.getColor( item ); } );
   },
 
   _createTexts: function( selection ) {
@@ -98,9 +92,9 @@ d3chart.BarChart.prototype = {
       .transition()
       .duration( 1000 )
       .attr( "y", function( item, index ) { return that._getOffset( index ); } )
-      .attr( "width", function( item ) { return that._xScale( item.getValue() ); } )
+      .attr( "width", function( item ) { return that._xScale( item.value || 0 ); } )
       .attr( "height", that._barWidth )
-      .attr( "fill", function( item ) { return item.getColor(); } );
+      .attr( "fill", function( item ) { return d3chart.getColor( item ); } );
   },
 
   _updateTexts: function( selection ) {
@@ -108,9 +102,9 @@ d3chart.BarChart.prototype = {
     selection
       .transition()
       .duration( 1000 )
-      .attr( "x", function( item ) { return that._chart._padding + 6 + that._xScale( item.getValue() ); } )
+      .attr( "x", function( item ) { return that._chart._padding + 6 + that._xScale( item.value || 0 ); } )
       .attr( "y", function( item, index ) { return that._getOffset( index ) + that._barWidth / 2; } )
-      .text( function( item ) { return item.getText(); } );
+      .text( function( item ) { return item.text || ""; } );
   },
 
   _removeElements: function( selection ) {
@@ -143,7 +137,7 @@ rap.registerTypeHandler( "d3chart.BarChart", {
 
   destructor: "destroy",
 
-  properties: [ "barWidth", "spacing" ],
+  properties: [ "barWidth", "spacing", "items" ],
 
   events: [ "Selection" ]
 

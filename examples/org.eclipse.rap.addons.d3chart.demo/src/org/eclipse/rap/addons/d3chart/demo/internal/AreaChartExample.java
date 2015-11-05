@@ -10,9 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo.internal;
 
-import java.util.List;
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
 
-import org.eclipse.rap.addons.d3chart.ChartItem;
 import org.eclipse.rap.addons.d3chart.ColorStream;
 import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.StreamChart;
@@ -20,6 +19,8 @@ import org.eclipse.rap.addons.d3chart.demo.internal.data.DataSet;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.ExampleData;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -33,6 +34,7 @@ public class AreaChartExample implements IExamplePage {
   private DataSet dataSet;
   private StreamChart chart;
   private ColorStream colors;
+  private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
@@ -66,19 +68,16 @@ public class AreaChartExample implements IExamplePage {
   }
 
   private void createItems() {
-    List<String> columns = dataSet.getColumns();
-    for( String browser : columns ) {
-      ChartItem item = new ChartItem( chart );
-      item.setText( browser );
-      item.setColor( colors.next() );
+    for( String browser : dataSet.getColumns() ) {
+      items.add( new JsonObject().set( "text", browser ).set( "color", toJson( colors.next() ) ) );
     }
   }
 
   private void update() {
-    ChartItem[] items = chart.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].setValues( dataSet.getValuesForColumn( i ) );
+    for( int i = 0; i < items.size(); i++ ) {
+      items.get( i ).asObject().set( "values", toJsonArray( dataSet.getValuesForColumn( i ) ) );
     }
+    chart.setChartData( items );
   }
 
   private Button createButton( Composite composite, String text, final DataSet data ) {
@@ -98,6 +97,14 @@ public class AreaChartExample implements IExamplePage {
     button.setText( text );
     button.addListener( SWT.Selection, listener );
     return button;
+  }
+
+  private static JsonArray toJsonArray( float[] values ) {
+    JsonArray jsonArray = new JsonArray();
+    for( int j = 0; j < values.length; j++ ) {
+      jsonArray.add( values[j] );
+    }
+    return jsonArray;
   }
 
 }

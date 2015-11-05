@@ -10,10 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.addons.d3chart.demo.internal;
 
+import static org.eclipse.rap.rwt.remote.JsonMapping.toJson;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.eclipse.rap.addons.d3chart.ChartItem;
 import org.eclipse.rap.addons.d3chart.ColorStream;
 import org.eclipse.rap.addons.d3chart.Colors;
 import org.eclipse.rap.addons.d3chart.PieChart;
@@ -22,6 +23,8 @@ import org.eclipse.rap.addons.d3chart.demo.internal.data.ExampleData;
 import org.eclipse.rap.addons.d3chart.demo.internal.data.DataSet.DataItem;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.json.JsonArray;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -44,6 +47,7 @@ public class PieChartExample implements IExamplePage {
   private int cursor;
   private Table table;
   private Label yearLabel;
+  private JsonArray items = new JsonArray();
 
   @Override
   public void createControl( Composite parent ) {
@@ -144,17 +148,12 @@ public class PieChartExample implements IExamplePage {
   private void createItems() {
     List<String> columns = dataSet.getColumns();
     for( String column : columns ) {
-      addItem( colors.next(), column );
+      Color color = colors.next();
+      items.add( new JsonObject().add( "value", 0 ).add( "color", toJson( color ) ) );
+      TableItem tableItem = new TableItem( table, SWT.NONE );
+      tableItem.setText( 1, column );
+      tableItem.setBackground( 0, color );
     }
-  }
-
-  private void addItem( Color color, String text ) {
-    ChartItem chartItem = new ChartItem( pieChart );
-    chartItem.setValue( 0 );
-    chartItem.setColor( color );
-    TableItem tableItem = new TableItem( table, SWT.NONE );
-    tableItem.setText( 1, text );
-    tableItem.setBackground( 0, color );
   }
 
   private void showPrevious() {
@@ -174,18 +173,15 @@ public class PieChartExample implements IExamplePage {
   private void updateItems( DataItem row ) {
     yearLabel.setText( row.getText() );
     float[] values = row.getValues();
-    ChartItem[] items = pieChart.getItems();
     TableItem[] tableItems = table.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      updateItems( items[ i ], tableItems[ i ], values[ i ] );
+    DecimalFormat decimalFormat = new DecimalFormat( "#.#" );
+    for( int i = 0; i < values.length; i++ ) {
+      float value = values[i];
+      String text = decimalFormat.format( value ) + "%";
+      tableItems[i].setText( 2, text );
+      items.get( i ).asObject().set( "value", value ).set( "text", value > 5 ? text : "" );
     }
-  }
-
-  private static void updateItems( ChartItem chartItem, TableItem tableItem, float value ) {
-    String text = new DecimalFormat( "#.#" ).format( value ) + "%";
-    chartItem.setValue( value );
-    chartItem.setText( value > 5 ? text : "" );
-    tableItem.setText( 2, text );
+    pieChart.setChartData( items );
   }
 
   private static Button createButton( Composite parent, String text, Listener listener ) {
